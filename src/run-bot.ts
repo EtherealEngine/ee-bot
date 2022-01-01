@@ -1,4 +1,4 @@
-/*import AgonesSDK from '@google-cloud/agones-sdk'
+import AgonesSDK from '@google-cloud/agones-sdk'
 import { BotAction } from './bot-action'
 import { BotManager } from './bot-manager'
 
@@ -88,4 +88,3 @@ async function run() {
   console.log('=============End=================')
 }
 run()
-*/
