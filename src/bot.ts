@@ -1,7 +1,9 @@
-import { URL } from 'url'
-import puppeteer from 'puppeteer'
 import fs from 'fs'
+import puppeteer from 'puppeteer'
+import { URL } from 'url'
+
 import { getOS } from './utils/getOS'
+import { makeAdmin } from './utils/make-user-admin'
 
 class PageUtils {
   bot: XREngineBot
@@ -87,7 +89,7 @@ export class XREngineBot {
   pageUtils: PageUtils
 
   constructor(args: BotProps = {}) {
-    this.verbose = args.verbose
+    this.verbose = args.verbose!
     this.headless = args.headless ?? true
     this.ci = typeof process.env.CI === 'string' && process.env.CI === 'true'
     console.log('headless', this.headless)
@@ -297,7 +299,7 @@ export class XREngineBot {
       if (fs.existsSync(chromePath)) {
         options.executablePath = chromePath
       } else {
-        console.warn('Warning! Please install Google Chrome to make bot workiing correctly in headless mode.\n')
+        console.warn('Warning! Please install Google Chrome to make bot work correctly in headless mode.\n')
       }
     }
     return options
@@ -312,8 +314,10 @@ export class XREngineBot {
       headless: this.headless,
       devtools: !this.headless,
       ignoreHTTPSErrors: true,
+      defaultViewport: this.windowSize,
+      ignoreDefaultArgs: ['--mute-audio'],
       args: [
-        '--enable-webgl',
+        this.headless ? '--headless' : '--enable-webgl',
         '--enable-features=NetworkService',
         '--ignore-certificate-errors',
         `--no-sandbox`,
@@ -322,58 +326,24 @@ export class XREngineBot {
         `--window-size=${this.windowSize.width},${this.windowSize.height}`,
         '--use-fake-ui-for-media-stream=1',
         '--use-fake-device-for-media-stream=1',
-        // `--use-file-for-fake-video-capture=${this.fakeMediaPath}/video.y4m`,
-        // `--use-file-for-fake-audio-capture=${this.fakeMediaPath}/audio.wav`,
         '--disable-web-security=1',
-        '--no-first-run',
-        //     '--use-fake-device-for-media-stream',
-        //     '--use-file-for-fake-video-capture=/Users/apple/Downloads/football_qcif_15fps.y4m',
-        //     // '--use-file-for-fake-audio-capture=/Users/apple/Downloads/BabyElephantWalk60.wav',
+        //'--no-first-run',
         '--allow-file-access=1',
         '--mute-audio'
       ],
-      defaultViewport: this.windowSize,
-      ignoreDefaultArgs: true, //['--mute-audio'],
       ...this.detectOsOption()
     }
-    if (this.headless) {
-      options.args.push('--headless')
-    }
-    if (this.ci) {
-      console.log('Starting puppeteer without gpu...')
-      options.args.push(
-        '--no-zygote',
-        '--headless',
-        // '--override-use-software-gl-for-tests',
-        // '--disable-gl-drawing-for-tests',
-        // '--disable-gpu',
-        // '--enable-precise-memory-info',
-        // '--enable-begin-frame-control',
-        // '--enable-surface-synchronization',
-        // '--run-all-compositor-stages-before-draw',
-        // '--disable-threaded-animation',
-        // '--disable-threaded-scrolling',
-        // '--disable-checker-imaging',
-        '--use-gl=swiftshader'
-        // '--enable-gpu-rasterization',
-        // '--use-cmd-decoder=passthrough'
-      )
-    }
-    // if (this.headless) options.args.push(
-    //   // '--disable-gpu',
-    //   // '--disable-software-rasterizer',
-    // )
 
     this.browser = await puppeteer.launch(options)
 
     this.page = await this.browser.newPage()
     this.page.on('close', () => {
       console.log('[XRENGINE BOT]: page closed')
-      this.page = undefined
+      this.page = undefined!
     })
 
     if (this.verbose) {
-      this.page.on('console', (consoleObj) => console.log('>> ', consoleObj.text()))
+      // this.page.on('console', (consoleObj) => console.log('>> ', consoleObj.text()))
     }
 
     // this.page
@@ -397,6 +367,7 @@ export class XREngineBot {
       throw Error('Cannot navigate without a browser!')
     }
 
+    url += url.includes('?') ? '&bot' : '?bot'
     let parsedUrl = new URL(url)
     const context = this.browser.defaultBrowserContext()
     console.log('permission allow for ', parsedUrl.origin)
@@ -454,6 +425,35 @@ export class XREngineBot {
     //         resolve();
     //     }, 30000)
     // }, 2000) });
+  }
+
+  /** Enters the editor scene specified
+   * @param {string} sceneUrl The url of the scene to load
+   */
+  async enterEditor(sceneUrl, loginUrl) {
+    await this.navigate(loginUrl)
+    await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
+    await this.clickElementById('h2', 'show-id-btn')
+    await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
+    const userId = await new Promise((resolve) => {
+      const interval = setInterval(async () => {
+        const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
+        if (id !== '') {
+          clearInterval(interval)
+          resolve(id)
+        }
+      }, 100)
+    })
+    console.log(userId)
+    //TODO: We should change this from making admin to registered user.
+    await makeAdmin(userId)
+    await this.navigate(sceneUrl)
+    await this.page.mouse.click(0, 0)
+    await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
+    console.log('selected sucessfully')
+    await this.page.mouse.click(0, 0)
+    await this.setFocus('canvas')
+    await this.clickElementById('canvas', 'viewport-canvas')
   }
 
   async waitForTimeout(timeout) {
