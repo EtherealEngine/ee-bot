@@ -1,9 +1,10 @@
 import fs from 'fs'
-import puppeteer from 'puppeteer'
+import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
+import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
 
 class PageUtils {
   bot: XREngineBot
@@ -230,10 +231,11 @@ export class XREngineBot {
   }
 
   async awaitPromise(fn, period = 100, ...args) {
-    return await new Promise<void>((resolve) => {
+    return await new Promise<any>((resolve) => {
       const interval = setInterval(async () => {
-        if (await this.page.evaluate(fn, ...args)) {
-          resolve()
+        const response = await this.page.evaluate(fn, ...args)
+        if (response) {
+          resolve(response)
           clearInterval(interval)
         }
       }, period)
@@ -242,21 +244,20 @@ export class XREngineBot {
 
   async awaitHookPromise(hook, period = 100, ...args) {
     console.log('[XR-BOT]: awaiting', hook, ...args)
-    return await new Promise<void>((resolve) => {
+    return await new Promise<any>((resolve) => {
       const interval = setInterval(async () => {
-        if (
-          await this.page.evaluate(
-            async (hook, ...args) => {
-              if (!globalThis.botHooks) {
-                return
-              }
-              return globalThis.botHooks[hook](...args)
-            },
-            hook,
-            ...args
-          )
-        ) {
-          resolve()
+        const response = await this.page.evaluate(
+          async (hook, ...args) => {
+            if (!globalThis.botHooks) {
+              return
+            }
+            return globalThis.botHooks[hook](...args)
+          },
+          hook,
+          ...args
+        )
+        if (response) {
+          resolve(response)
           clearInterval(interval)
         }
       }, period)
@@ -332,11 +333,13 @@ export class XREngineBot {
         '--mute-audio'
       ],
       ...this.detectOsOption()
-    }
+    } as LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
 
     this.browser = await puppeteer.launch(options)
 
     this.page = await this.browser.newPage()
+    await this.page.setUserAgent(BotUserAgent)
+
     this.page.on('close', () => {
       console.log('[XRENGINE BOT]: page closed')
       this.page = undefined!
@@ -345,11 +348,6 @@ export class XREngineBot {
     if (this.verbose) {
       // this.page.on('console', (consoleObj) => console.log('>> ', consoleObj.text()))
     }
-
-    // this.page
-    await this.page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
-    )
 
     this.pageUtils = new PageUtils(this)
   }
