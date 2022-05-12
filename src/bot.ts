@@ -311,7 +311,7 @@ export class XREngineBot {
    */
   async launchBrowser() {
     const options = {
-      dumpio: this.verbose,
+      // dumpio: this.verbose,
       headless: this.headless,
       devtools: !this.headless,
       ignoreHTTPSErrors: true,
@@ -346,7 +346,14 @@ export class XREngineBot {
     })
 
     if (this.verbose) {
-      // this.page.on('console', (consoleObj) => console.log('>> ', consoleObj.text()))
+      this.page.on('console', (consoleObj) => console.log(`>> [${this.name}]: ${consoleObj.text()}`))
+        // console.log(consoleObj.type())
+        // console.log(consoleObj.text())
+        // Promise.all(consoleObj.args().map((val) => {
+        //   val.jsonValue()
+        // })).then((...args) => console.log(...args))
+        // console.log(consoleObj.location())
+      // })
     }
 
     this.pageUtils = new PageUtils(this)
@@ -365,7 +372,6 @@ export class XREngineBot {
       throw Error('Cannot navigate without a browser!')
     }
 
-    url += url.includes('?') ? '&bot' : '?bot'
     let parsedUrl = new URL(url)
     const context = this.browser.defaultBrowserContext()
     console.log('permission allow for ', parsedUrl.origin)
