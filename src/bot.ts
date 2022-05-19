@@ -2,9 +2,10 @@ import fs from 'fs'
 import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
+import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
+
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
-import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
 
 class PageUtils {
   bot: XREngineBot
@@ -347,12 +348,12 @@ export class XREngineBot {
 
     if (this.verbose) {
       this.page.on('console', (consoleObj) => console.log(`>> [${this.name}]: ${consoleObj.text()}`))
-        // console.log(consoleObj.type())
-        // console.log(consoleObj.text())
-        // Promise.all(consoleObj.args().map((val) => {
-        //   val.jsonValue()
-        // })).then((...args) => console.log(...args))
-        // console.log(consoleObj.location())
+      // console.log(consoleObj.type())
+      // console.log(consoleObj.text())
+      // Promise.all(consoleObj.args().map((val) => {
+      //   val.jsonValue()
+      // })).then((...args) => console.log(...args))
+      // console.log(consoleObj.location())
       // })
     }
 
@@ -384,6 +385,8 @@ export class XREngineBot {
       // @ts-ignore
       return (await navigator.permissions.query({ name: 'camera' })).state
     })
+
+    this.page.screenshot({ path: 'screen-11.png', fullPage: true })
     console.log('Granted:', granted)
   }
 
@@ -434,30 +437,29 @@ export class XREngineBot {
   /** Enters the editor scene specified
    * @param {string} sceneUrl The url of the scene to load
    */
-  async enterEditor(sceneUrl, loginUrl) {
-    await this.navigate(loginUrl)
-    await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
-    await this.clickElementById('h2', 'show-id-btn')
-    await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
-    const userId = await new Promise((resolve) => {
-      const interval = setInterval(async () => {
-        const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
-        if (id !== '') {
-          clearInterval(interval)
-          resolve(id)
-        }
-      }, 100)
-    })
-    console.log(userId)
+  // async enterEditor(sceneUrl, loginUrl) {
+  async enterEditor(editorUrl) {
+    // await this.navigate(loginUrl)
+    // await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
+    // await this.clickElementById('h2', 'show-id-btn')
+    // await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
+    // const userId = await new Promise((resolve) => {
+    //   const interval = setInterval(async () => {
+    //     const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
+    //     if (id !== '') {
+    //       clearInterval(interval)
+    //       resolve(id)
+    //     }
+    //   }, 100)
+    // })
     //TODO: We should change this from making admin to registered user.
-    await makeAdmin(userId)
-    await this.navigate(sceneUrl)
-    await this.page.mouse.click(0, 0)
-    await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
-    console.log('selected sucessfully')
-    await this.page.mouse.click(0, 0)
-    await this.setFocus('canvas')
-    await this.clickElementById('canvas', 'viewport-canvas')
+    // await makeAdmin(userId)
+    await this.navigate(editorUrl)
+    await this.delay(1000)
+    await this.page.click(`[class^='_itemContainer']`)
+    await this.delay(1000)
+    await this.page.click(`[class^='_sceneContainer']`)
+    await this.delay(500)
   }
 
   async waitForTimeout(timeout) {
