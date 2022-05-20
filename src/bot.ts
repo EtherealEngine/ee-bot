@@ -385,8 +385,6 @@ export class XREngineBot {
       // @ts-ignore
       return (await navigator.permissions.query({ name: 'camera' })).state
     })
-
-    this.page.screenshot({ path: 'screen-11.png', fullPage: true })
     console.log('Granted:', granted)
   }
 
@@ -434,36 +432,27 @@ export class XREngineBot {
     // }, 2000) });
   }
 
-  /** Enters the editor scene specified
-   * @param {string} sceneUrl The url of the scene to load
+  /** Enters the editor
+   * @param {string} editorUrl The url to load editor page
    */
-  // async enterEditor(sceneUrl, loginUrl) {
   async enterEditor(editorUrl) {
-    // await this.navigate(loginUrl)
-    // await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
-    // await this.clickElementById('h2', 'show-id-btn')
-    // await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
-    // const userId = await new Promise((resolve) => {
-    //   const interval = setInterval(async () => {
-    //     const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
-    //     if (id !== '') {
-    //       clearInterval(interval)
-    //       resolve(id)
-    //     }
-    //   }, 100)
-    // })
-    //TODO: We should change this from making admin to registered user.
-    // await makeAdmin(userId)
     await this.navigate(editorUrl)
-    await this.delay(1000)
+    await this.delay(5000)
     await this.page.click(`[class^='_itemContainer']`)
-    await this.delay(1000)
+    await this.delay(5000)
     await this.page.click(`[class^='_sceneContainer']`)
     await this.delay(500)
   }
 
   async waitForTimeout(timeout) {
     return await new Promise<void>((resolve) => setTimeout(() => resolve(), timeout))
+  }
+
+  async clickAnotherScene() {
+    await this.page.click('#rc-tabs-0-tab-scenePanel')
+    await this.delay(5000)
+    await this.page.click(`[class^='_sceneContainer']:nth-child(2)`)
+    await this.delay(500)
   }
 
   async waitForSelector(selector, timeout) {
