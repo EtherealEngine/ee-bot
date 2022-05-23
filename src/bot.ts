@@ -432,27 +432,8 @@ export class XREngineBot {
     // }, 2000) });
   }
 
-  /** Enters the editor
-   * @param {string} editorUrl The url to load editor page
-   */
-  async enterEditor(editorUrl) {
-    await this.navigate(editorUrl)
-    await this.delay(5000)
-    await this.page.click(`[class^='_itemContainer']`)
-    await this.delay(5000)
-    await this.page.click(`[class^='_sceneContainer']`)
-    await this.delay(500)
-  }
-
   async waitForTimeout(timeout) {
     return await new Promise<void>((resolve) => setTimeout(() => resolve(), timeout))
-  }
-
-  async clickAnotherScene() {
-    await this.page.click('#rc-tabs-0-tab-scenePanel')
-    await this.delay(5000)
-    await this.page.click(`[class^='_sceneContainer']:nth-child(2)`)
-    await this.delay(500)
   }
 
   async waitForSelector(selector, timeout) {
