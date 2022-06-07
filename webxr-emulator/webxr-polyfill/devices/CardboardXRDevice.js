@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import CardboardVRDisplay from 'cardboard-vr-display';
+// import CardboardVRDisplay from 'cardboard-vr-display';
 import WebVRDevice from './WebVRDevice';
 
 export default class CardboardXRDevice extends WebVRDevice {
@@ -25,17 +25,17 @@ export default class CardboardXRDevice extends WebVRDevice {
    * @param {Object?} cardboardConfig
    */
   constructor(global, cardboardConfig) {
-    const display = new CardboardVRDisplay(cardboardConfig || {});
-    super(global, display);
+    // const display = new CardboardVRDisplay(cardboardConfig || {});
+    // super(global, display);
 
-    this.display = display;
-    this.frame = {
-      rightViewMatrix: new Float32Array(16),
-      leftViewMatrix: new Float32Array(16),
-      rightProjectionMatrix: new Float32Array(16),
-      leftProjectionMatrix: new Float32Array(16),
-      pose: null,
-      timestamp: null,
-    };
+    // this.display = display;
+    // this.frame = {
+    //   rightViewMatrix: new Float32Array(16),
+    //   leftViewMatrix: new Float32Array(16),
+    //   rightProjectionMatrix: new Float32Array(16),
+    //   leftProjectionMatrix: new Float32Array(16),
+    //   pose: null,
+    //   timestamp: null,
+    // };
   }
 }
