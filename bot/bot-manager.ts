@@ -1,4 +1,4 @@
-import { XREngineBot } from './bot'
+import { XREngineBot } from '.'
 import { BotActionType } from './bot-action'
 
 export class BotManager {
