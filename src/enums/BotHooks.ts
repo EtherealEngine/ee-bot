@@ -4,7 +4,8 @@ export enum BotHooks {
   GetPlayerPosition = 'BotHooks_GetPlayerPosition',
   GetSceneMetadata = 'BotHooks_GetSceneMetadata',
   RotatePlayer = 'BotHooks_RotatePlayer',
-  GetClients = 'BotHooks_GetClients'
+  GetClients = 'BotHooks_GetClients',
+  SerializeEngine = 'BotHooks_SerializeEngine'
 }
 
 export enum XRBotHooks {

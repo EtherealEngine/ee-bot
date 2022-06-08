@@ -19,6 +19,8 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
+import { iterativeMapToObject } from '@xrengine/common/src/utils/mapToObject'
+import type { Network } from '@xrengine/engine/src/networking/classes/Network'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -27,6 +29,7 @@ export const BotHookFunctions = {
   [BotHooks.GetSceneMetadata]: getSceneMetadata,
   [BotHooks.RotatePlayer]: rotatePlayer,
   [BotHooks.GetClients]: getClients,
+  [BotHooks.SerializeEngine]: serializeEngine,
   [XRBotHooks.OverrideXR]: overrideXR,
   [XRBotHooks.XRSupported]: xrSupported,
   [XRBotHooks.XRInitialized]: xrInitialized,
@@ -69,4 +72,29 @@ export function rotatePlayer({ angle }) {
 
 export function getClients() {
   return Array.from(useWorld().clients)
+}
+
+export function serializeEngine() {
+  const engine = iterativeMapToObject(Engine.instance) as Engine
+  // delete extremelty large objects
+  [...engine.worlds, engine.currentWorld].forEach((world) => {
+    world.scene = null!
+    world.camera = null!
+    world.audioListener = null!
+    world.networks && (Object.values(world.networks as any as Record<string, Network>)).forEach((network: any) => {
+      return {
+        // dataProducers: mapToObject(network.dataProducers),
+        // dataConsumers: mapToObject(network.dataConsumers),
+        hostId: network.hostId,
+        type: network.type,
+        leaving: network.leaving,
+        left: network.left,
+        reconnecting: network.reconnecting,
+        // recvTransport: network.recvTransport,
+        // sendTransport: network.sendTransport,
+        dataProducer: network.left,
+      }
+    })
+  })
+  return  JSON.stringify(engine)
 }
