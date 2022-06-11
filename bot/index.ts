@@ -25,12 +25,15 @@ class PageUtils {
       classRegex.toString().slice(1, -1)
     )
   }
-  async clickSelectorId(selector, id) {
+  async clickSelectorId<K extends keyof HTMLElementTagNameMap>(selector: K, id: string) {
     if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${id}`)
 
+    await this.bot.page.waitForFunction(`document.getElementById('${id})`)
+    
     await this.bot.page.evaluate(
-      (selector, id) => {
+      (selector: K, id: string) => {
         let matches = Array.from(document.querySelectorAll(selector))
+
         let singleMatch = matches.find((button) => button.id === id)
         let result
         if (singleMatch && singleMatch.click) {
@@ -132,7 +135,7 @@ export class XREngineBot {
   async sendMessage(message) {
     console.log('send message: ' + message)
     await this.clickElementByClass('button', 'openChat')
-    await this.clickElementById('input', 'newMessage')
+    await this.pageUtils.clickSelectorId('input', 'newMessage')
     await this.typeMessage(message)
     await this.clickElementByClass('button', 'sendMessage')
   }
@@ -144,13 +147,13 @@ export class XREngineBot {
 
   async sendAudio(duration) {
     console.log('Sending audio...')
-    await this.clickElementById('button', 'UserAudio')
+    await this.pageUtils.clickSelectorId('button', 'UserAudio')
     await this.waitForTimeout(duration)
   }
 
   async stopAudio(bot) {
     console.log('Stop audio...')
-    await this.clickElementById('button', 'UserAudio')
+    await this.pageUtils.clickSelectorId('button', 'UserAudio')
   }
 
   async recvAudio(duration) {
@@ -160,13 +163,13 @@ export class XREngineBot {
 
   async sendVideo(duration) {
     console.log('Sending video...')
-    await this.clickElementById('button', 'UserVideo')
+    await this.pageUtils.clickSelectorId('button', 'UserVideo')
     await this.waitForTimeout(duration)
   }
 
   async stopVideo(bot) {
     console.log('Stop video...')
-    await this.clickElementById('button', 'UserVideo')
+    await this.pageUtils.clickSelectorId('button', 'UserVideo')
   }
 
   async recvVideo(duration) {
@@ -421,7 +424,7 @@ export class XREngineBot {
     console.log('selected sucessfully')
     await this.page.mouse.click(0, 0)
     await this.setFocus('canvas')
-    await this.clickElementById('canvas', 'engine-renderer-canvas')
+    await this.pageUtils.clickSelectorId('canvas', 'engine-renderer-canvas')
     // await new Promise(resolve => {setTimeout(async() => {
     //     // await this.pu.clickSelectorClassRegex("button", /join_world/);
     //     setTimeout(async() => {
@@ -437,7 +440,7 @@ export class XREngineBot {
   async enterEditor(sceneUrl, loginUrl) {
     await this.navigate(loginUrl)
     await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
-    await this.clickElementById('h2', 'show-id-btn')
+    await this.pageUtils.clickSelectorId('h2', 'show-id-btn')
     await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
     const userId = await new Promise((resolve) => {
       const interval = setInterval(async () => {
@@ -457,7 +460,7 @@ export class XREngineBot {
     console.log('selected sucessfully')
     await this.page.mouse.click(0, 0)
     await this.setFocus('canvas')
-    await this.clickElementById('canvas', 'viewport-canvas')
+    await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
   }
 
   async waitForTimeout(timeout) {
@@ -472,8 +475,19 @@ export class XREngineBot {
     await this.pageUtils.clickSelectorClassRegex(elemType || 'button', classSelector)
   }
 
-  async clickElementById(elemType, id) {
-    await this.pageUtils.clickSelectorId(elemType, id)
+  async clickElementById(id: string) {
+    console.log('waiting for', id)
+    await this.page.waitForFunction(`document.getElementById('${id}')`)
+    console.log('clicking', id)
+    await this.page.evaluate(
+      (id: string) => {
+        const el = document.getElementById(id)
+        console.log(el)
+        // @ts-ignore
+        el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      },
+      id
+    )
   }
 
   async typeMessage(message) {
