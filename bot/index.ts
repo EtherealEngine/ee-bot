@@ -28,7 +28,7 @@ class PageUtils {
   async clickSelectorId<K extends keyof HTMLElementTagNameMap>(selector: K, id: string) {
     if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${id}`)
 
-    await this.bot.page.waitForFunction(`document.getElementById('${id})`)
+    await this.bot.page.waitForFunction(`document.getElementById('${id}')`)
     
     await this.bot.page.evaluate(
       (selector: K, id: string) => {
