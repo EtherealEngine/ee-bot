@@ -2,8 +2,7 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { getEngineState } from '@xrengine/engine/src/ecs/classes/EngineState'
-import { getComponent, hasComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
-import { useWorld } from '@xrengine/engine/src/ecs/functions/SystemHooks'
+import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { TransformComponent } from '@xrengine/engine/src/transform/components/TransformComponent'
 import { BotHooks, XRBotHooks } from '../enums/BotHooks'
 import {
@@ -20,7 +19,6 @@ import {
   xrSupported
 } from './xrBotHookFunctions'
 import { iterativeMapToObject } from '@xrengine/common/src/utils/mapToObject'
-import type { Network } from '@xrengine/engine/src/networking/classes/Network'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -28,7 +26,7 @@ export const BotHookFunctions = {
   [BotHooks.GetPlayerPosition]: getPlayerPosition,
   [BotHooks.GetSceneMetadata]: getSceneMetadata,
   [BotHooks.RotatePlayer]: rotatePlayer,
-  [BotHooks.GetClients]: getClients,
+  [BotHooks.GetWorldNetworkPeers]: getPeers,
   [BotHooks.SerializeEngine]: serializeEngine,
   [XRBotHooks.OverrideXR]: overrideXR,
   [XRBotHooks.XRSupported]: xrSupported,
@@ -58,7 +56,7 @@ export function getPlayerPosition() {
 }
 
 export function getSceneMetadata() {
-  return useWorld().sceneMetadata
+  return Engine.instance.currentWorld.sceneMetadata
 }
 
 /**
@@ -66,35 +64,32 @@ export function getSceneMetadata() {
  * @param {number} args.angle in degrees
  */
 export function rotatePlayer({ angle }) {
-  const transform = getComponent(useWorld().localClientEntity, TransformComponent)
+  const transform = getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)
   transform.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(angle)))
 }
 
-export function getClients() {
-  return Array.from(useWorld().clients)
+export function getPeers() {
+  return Array.from(Engine.instance.currentWorld.worldNetwork.peers)
 }
 
 export function serializeEngine() {
-  const engine = iterativeMapToObject(Engine.instance) as Engine
-  // delete extremelty large objects
-  [...engine.worlds, engine.currentWorld].forEach((world) => {
-    world.scene = null!
-    world.camera = null!
-    world.audioListener = null!
-    world.networks && (Object.values(world.networks as any as Record<string, Network>)).forEach((network: any) => {
-      return {
-        // dataProducers: mapToObject(network.dataProducers),
-        // dataConsumers: mapToObject(network.dataConsumers),
-        hostId: network.hostId,
-        type: network.type,
-        leaving: network.leaving,
-        left: network.left,
-        reconnecting: network.reconnecting,
-        // recvTransport: network.recvTransport,
-        // sendTransport: network.sendTransport,
-        dataProducer: network.left,
-      }
-    })
-  })
-  return  JSON.stringify(engine)
+  const engine = {
+    tickRate: Engine.instance.tickRate,
+    injectedSystems: Engine.instance.injectedSystems,
+    userId: Engine.instance.userId,
+    store: Engine.instance.store,
+    frameTime: Engine.instance.frameTime,
+    engineTimer: Engine.instance.engineTimer,
+    isBot: Engine.instance.isBot,
+    isHMD: Engine.instance.isHMD,
+    // currentWorld: Engine.instance.currentWorld,
+    // worlds: Engine.instance.worlds,
+    publicPath: Engine.instance.publicPath,
+    simpleMaterials: Engine.instance.simpleMaterials,
+    xrFrame: Engine.instance.xrFrame,
+    isEditor: Engine.instance.isEditor
+  } as Engine
+
+  console.log(JSON.stringify(iterativeMapToObject(engine)))
+  return JSON.stringify(iterativeMapToObject(engine))
 }
