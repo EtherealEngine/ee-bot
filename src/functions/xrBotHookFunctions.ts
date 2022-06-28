@@ -6,7 +6,6 @@ import { dispatchAction } from '@xrengine/hyperflux'
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
-import { useWorld } from '@xrengine/engine/src/ecs/functions/SystemHooks'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
 import { XRInputSourceComponent } from '@xrengine/engine/src/xr/components/XRInputSourceComponent'
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
@@ -121,7 +120,7 @@ export function moveControllerStick(args) {
 }
 
 export function getXRInputPosition() {
-  const xrInputs = getComponent(useWorld().localClientEntity, XRInputSourceComponent)
+  const xrInputs = getComponent(Engine.instance.currentWorld.localClientEntity, XRInputSourceComponent)
 
   const hmd = xrInputs.head.position.toArray().concat(xrInputs.head.quaternion.toArray())
   const left = xrInputs.controllerLeft.position.toArray().concat(xrInputs.controllerLeft.quaternion.toArray())
