@@ -75,26 +75,23 @@ export function getClients() {
 }
 
 export function serializeEngine() {
-  const engine = iterativeMapToObject(Engine.instance) as Engine
-  // delete extremelty large objects
-  [...engine.worlds, engine.currentWorld].forEach((world) => {
-    world.scene = null!
-    world.camera = null!
-    world.audioListener = null!
-    world.networks && (Object.values(world.networks as any as Record<string, Network>)).forEach((network: any) => {
-      return {
-        // dataProducers: mapToObject(network.dataProducers),
-        // dataConsumers: mapToObject(network.dataConsumers),
-        hostId: network.hostId,
-        type: network.type,
-        leaving: network.leaving,
-        left: network.left,
-        reconnecting: network.reconnecting,
-        // recvTransport: network.recvTransport,
-        // sendTransport: network.sendTransport,
-        dataProducer: network.left,
-      }
-    })
-  })
-  return  JSON.stringify(engine)
+  const engine = {
+    tickRate: Engine.instance.tickRate,
+    injectedSystems: Engine.instance.injectedSystems,
+    userId: Engine.instance.userId,
+    store: Engine.instance.store,
+    frameTime: Engine.instance.frameTime,
+    engineTimer: Engine.instance.engineTimer,
+    isBot: Engine.instance.isBot,
+    isHMD: Engine.instance.isHMD,
+    // currentWorld: Engine.instance.currentWorld,
+    // worlds: Engine.instance.worlds,
+    publicPath: Engine.instance.publicPath,
+    simpleMaterials: Engine.instance.simpleMaterials,
+    xrFrame: Engine.instance.xrFrame,
+    isEditor: Engine.instance.isEditor
+  } as Engine
+
+  console.log(JSON.stringify(iterativeMapToObject(engine)))
+  return JSON.stringify(iterativeMapToObject(engine))
 }
