@@ -7,7 +7,8 @@ import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
-import { XRInputSourceComponent } from '@xrengine/engine/src/xr/components/XRInputSourceComponent'
+import { XRInputSourceComponent } from '@xrengine/engine/src/xr/XRComponents'
+import { XRAction } from '@xrengine/engine/src/xr/XRAction'
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
 export async function overrideXR() {
@@ -69,7 +70,7 @@ export function xrInitialized() {
 }
 
 export function startXR() {
-  dispatchAction(EngineActions.xrStart({}) as any)
+  dispatchAction(XRAction.requestSession({}) as any)
   WebXREventDispatcher.instance.dispatchEvent({
     type: 'webxr-pose',
     detail: {
