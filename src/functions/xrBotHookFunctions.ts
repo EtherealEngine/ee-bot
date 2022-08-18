@@ -1,14 +1,14 @@
 // === SETUP WEBXR === //
 import { Quaternion, Vector3 } from 'three'
 
-import { dispatchAction } from '@xrengine/hyperflux'
-
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
-import { XRInputSourceComponent } from '@xrengine/engine/src/xr/XRComponents'
 import { XRAction } from '@xrengine/engine/src/xr/XRAction'
+import { XRInputSourceComponent } from '@xrengine/engine/src/xr/XRComponents'
+import { dispatchAction } from '@xrengine/hyperflux'
+
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
 export async function overrideXR() {

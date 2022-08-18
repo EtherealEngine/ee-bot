@@ -1,10 +1,10 @@
 import { isDev } from '@xrengine/common/src/utils/isDev'
-
 import { AvatarInputSchema } from '@xrengine/engine/src/avatar/AvatarInputSchema'
 import { LifecycleValue } from '@xrengine/engine/src/common/enums/LifecycleValue'
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { World } from '@xrengine/engine/src/ecs/classes/World'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
+
 import { BotHookFunctions } from '../functions/botHookFunctions'
 import { sendXRInputData, simulateXR } from '../functions/xrBotHookFunctions'
 

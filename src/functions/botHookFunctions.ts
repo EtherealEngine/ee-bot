@@ -1,9 +1,11 @@
 import { MathUtils, Quaternion, Vector3 } from 'three'
 
+import { iterativeMapToObject } from '@xrengine/common/src/utils/mapToObject'
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { getEngineState } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { TransformComponent } from '@xrengine/engine/src/transform/components/TransformComponent'
+
 import { BotHooks, XRBotHooks } from '../enums/BotHooks'
 import {
   getXRInputPosition,
@@ -18,13 +20,11 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
-import { iterativeMapToObject } from '@xrengine/common/src/utils/mapToObject'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
   [BotHooks.SceneLoaded]: sceneLoaded,
   [BotHooks.GetPlayerPosition]: getPlayerPosition,
-  [BotHooks.GetSceneMetadata]: getSceneMetadata,
   [BotHooks.RotatePlayer]: rotatePlayer,
   [BotHooks.GetWorldNetworkPeers]: getPeers,
   [BotHooks.SerializeEngine]: serializeEngine,
@@ -53,10 +53,6 @@ export function sceneLoaded() {
 
 export function getPlayerPosition() {
   return getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)?.position
-}
-
-export function getSceneMetadata() {
-  return Engine.instance.currentWorld.sceneMetadata
 }
 
 /**

@@ -2,9 +2,10 @@ import fs from 'fs'
 import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
+import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
+
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
-import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
 
 class PageUtils {
   bot: XREngineBot
@@ -29,7 +30,7 @@ class PageUtils {
     if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${id}`)
 
     await this.bot.page.waitForFunction(`document.getElementById('${id}')`)
-    
+
     await this.bot.page.evaluate(
       (selector: K, id: string) => {
         let matches = Array.from(document.querySelectorAll(selector))
@@ -350,12 +351,12 @@ export class XREngineBot {
 
     if (this.verbose) {
       this.page.on('console', (consoleObj) => console.log(`>> [${this.name}]: ${consoleObj.text()}`))
-        // console.log(consoleObj.type())
-        // console.log(consoleObj.text())
-        // Promise.all(consoleObj.args().map((val) => {
-        //   val.jsonValue()
-        // })).then((...args) => console.log(...args))
-        // console.log(consoleObj.location())
+      // console.log(consoleObj.type())
+      // console.log(consoleObj.text())
+      // Promise.all(consoleObj.args().map((val) => {
+      //   val.jsonValue()
+      // })).then((...args) => console.log(...args))
+      // console.log(consoleObj.location())
       // })
     }
 
@@ -479,15 +480,12 @@ export class XREngineBot {
     console.log('waiting for', id)
     await this.page.waitForFunction(`document.getElementById('${id}')`)
     console.log('clicking', id)
-    await this.page.evaluate(
-      (id: string) => {
-        const el = document.getElementById(id)
-        console.log(el)
-        // @ts-ignore
-        el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-      },
-      id
-    )
+    await this.page.evaluate((id: string) => {
+      const el = document.getElementById(id)
+      console.log(el)
+      // @ts-ignore
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    }, id)
   }
 
   async typeMessage(message) {
