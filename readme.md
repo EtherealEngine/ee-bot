@@ -1,13 +1,9 @@
-# Bot API - WORK IN PROGRESS
-
-Previously used agones for running inside an XREngine cluster - this is considered deprecated in favour of simplicitly.
-
-### Example
+# Bot API
 
 ```ts
 import { Vector3 } from 'three'
-import { XREngineBot } from '@xrengine/bot/src/bot'
-import { BotHooks } from '@xrengine/engine/src/bot/enums/BotHooks'
+import { XREngineBot } from 'XREngine-bot/src/bot'
+import { BotHooks } from 'XREngine-bot/src/bot/enums/BotHooks'
 
 const maxTimeout = 10 * 1000
 const bot = new XREngineBot({ name: 'bot-1', headless: false, verbose: false })
