@@ -5,8 +5,9 @@ import { SystemUpdateType } from '@xrengine/engine/src/ecs/functions/SystemUpdat
 export default async function injectBotModule(world: World) {
   await initSystems(world, [
     {
+      uuid: 'xre.bot.BotHookSystem',
       type: SystemUpdateType.FIXED,
-      systemModulePromise: import('./src/systems/BotHookSystem')
+      systemLoader: () => import('./src/systems/BotHookSystem')
     }
   ])
 }

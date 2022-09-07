@@ -71,7 +71,6 @@ export function getPeers() {
 export function serializeEngine() {
   const engine = {
     tickRate: Engine.instance.tickRate,
-    injectedSystems: Engine.instance.injectedSystems,
     userId: Engine.instance.userId,
     store: Engine.instance.store,
     frameTime: Engine.instance.frameTime,
