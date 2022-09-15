@@ -80,7 +80,6 @@ export function serializeEngine() {
     // currentWorld: Engine.instance.currentWorld,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
-    simpleMaterials: Engine.instance.simpleMaterials,
     xrFrame: Engine.instance.xrFrame,
     isEditor: Engine.instance.isEditor
   } as Engine
