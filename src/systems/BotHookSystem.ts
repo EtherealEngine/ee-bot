@@ -8,11 +8,12 @@ import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSyste
 import { BotHookFunctions } from '../functions/botHookFunctions'
 import { sendXRInputData, simulateXR } from '../functions/xrBotHookFunctions'
 
+const setupBotKey = 'xre.bot.setupBotKey'
+
 export default async function BotHookSystem(world: World) {
   globalThis.botHooks = BotHookFunctions
 
   if (isDev) {
-    const setupBotKey = 'setupBotKey'
     AvatarInputSchema.inputMap.set('Semicolon', setupBotKey)
     AvatarInputSchema.behaviorMap.set(setupBotKey, (entity, inputKey, inputValue) => {
       if (inputValue.lifecycleState !== LifecycleValue.Started) return
@@ -20,9 +21,17 @@ export default async function BotHookSystem(world: World) {
     })
   }
 
-  return () => {
+  const execute = () => {
     if (Engine.instance.isBot && Boolean(EngineRenderer.instance.xrSession)) {
       sendXRInputData()
     }
   }
+
+  const cleanup = () => {
+    delete globalThis.botHooks
+    if (AvatarInputSchema.inputMap.get('Semicolon') === setupBotKey) AvatarInputSchema.inputMap.delete('Semicolon')
+    AvatarInputSchema.behaviorMap.delete('setupBotKey')
+  }
+
+  return { execute, cleanup }
 }
