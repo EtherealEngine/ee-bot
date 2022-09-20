@@ -27,7 +27,7 @@ export default async function BotHookSystem(world: World) {
     }
   }
 
-  const cleanup = () => {
+  const cleanup = async () => {
     delete globalThis.botHooks
     if (AvatarInputSchema.inputMap.get('Semicolon') === setupBotKey) AvatarInputSchema.inputMap.delete('Semicolon')
     AvatarInputSchema.behaviorMap.delete('setupBotKey')
