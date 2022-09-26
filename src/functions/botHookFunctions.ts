@@ -76,7 +76,6 @@ export function serializeEngine() {
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
     isBot: Engine.instance.isBot,
-    isHMD: Engine.instance.isHMD,
     // currentWorld: Engine.instance.currentWorld,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
