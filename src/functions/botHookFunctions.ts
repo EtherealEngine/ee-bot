@@ -81,7 +81,7 @@ export function serializeEngine() {
     publicPath: Engine.instance.publicPath,
     xrFrame: Engine.instance.xrFrame,
     isEditor: Engine.instance.isEditor
-  } as Engine
+  }
 
   console.log(JSON.stringify(iterativeMapToObject(engine)))
   return JSON.stringify(iterativeMapToObject(engine))
