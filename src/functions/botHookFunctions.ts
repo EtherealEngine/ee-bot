@@ -76,13 +76,12 @@ export function serializeEngine() {
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
     isBot: Engine.instance.isBot,
-    isHMD: Engine.instance.isHMD,
     // currentWorld: Engine.instance.currentWorld,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
     xrFrame: Engine.instance.xrFrame,
     isEditor: Engine.instance.isEditor
-  } as Engine
+  }
 
   console.log(JSON.stringify(iterativeMapToObject(engine)))
   return JSON.stringify(iterativeMapToObject(engine))
