@@ -5,7 +5,7 @@ import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
-import { XRAction } from '@xrengine/engine/src/xr/XRAction'
+import { XRAction } from '@xrengine/engine/src/xr/XRState'
 import { XRInputSourceComponent } from '@xrengine/engine/src/xr/XRComponents'
 import { dispatchAction } from '@xrengine/hyperflux'
 
