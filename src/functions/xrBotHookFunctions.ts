@@ -6,7 +6,6 @@ import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
 import { XRAction } from '@xrengine/engine/src/xr/XRState'
-import { XRInputSourceComponent } from '@xrengine/engine/src/xr/XRComponents'
 import { dispatchAction } from '@xrengine/hyperflux'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
@@ -121,17 +120,7 @@ export function moveControllerStick(args) {
 }
 
 export function getXRInputPosition() {
-  const xrInputs = getComponent(Engine.instance.currentWorld.localClientEntity, XRInputSourceComponent)
-
-  const hmd = xrInputs.head.position.toArray().concat(xrInputs.head.quaternion.toArray())
-  const left = xrInputs.controllerLeft.position.toArray().concat(xrInputs.controllerLeft.quaternion.toArray())
-  const right = xrInputs.controllerRight.position.toArray().concat(xrInputs.controllerRight.quaternion.toArray())
-
-  return {
-    headInputValue: hmd,
-    leftControllerInputValue: left,
-    rightControllerInputValue: right
-  }
+  // todo - reimplement
 }
 
 type InputSource = 'head' | 'leftController' | 'rightController'
