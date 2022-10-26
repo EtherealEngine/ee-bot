@@ -1,4 +1,4 @@
-import { isDev } from '@xrengine/common/src/utils/isDev'
+import { isDev } from '@xrengine/common/src/config'
 import { AvatarInputSchema } from '@xrengine/engine/src/avatar/AvatarInputSchema'
 import { LifecycleValue } from '@xrengine/engine/src/common/enums/LifecycleValue'
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
