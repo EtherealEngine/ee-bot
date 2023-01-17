@@ -2,6 +2,8 @@ import { isDev } from '@xrengine/common/src/config'
 import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { World } from '@xrengine/engine/src/ecs/classes/World'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
+import { XRState } from '@xrengine/engine/src/xr/XRState'
+import { getState } from '@xrengine/hyperflux'
 
 import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
@@ -20,7 +22,8 @@ export default async function BotHookSystem(world: World) {
   }
 
   const execute = () => {
-    if (Engine.instance.isBot && Boolean(EngineRenderer.instance.xrSession)) {
+    const xrSession = getState(XRState).session.value
+    if (Engine.instance.isBot && Boolean(xrSession)) {
       sendXRInputData()
     }
   }

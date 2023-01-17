@@ -18,8 +18,8 @@ class PageUtils {
     await this.bot.page.evaluate(
       (selector, classRegex) => {
         classRegex = new RegExp(classRegex)
-        let buttons = Array.from(document.querySelectorAll(selector))
-        let enterButton = buttons.find((button) => Array.from(button.classList).some((c) => classRegex.test(c)))
+        const buttons = Array.from(document.querySelectorAll(selector))
+        const enterButton = buttons.find((button) => Array.from(button.classList).some((c) => classRegex.test(c)))
         if (enterButton) enterButton.click()
       },
       selector,
@@ -33,9 +33,9 @@ class PageUtils {
 
     await this.bot.page.evaluate(
       (selector: K, id: string) => {
-        let matches = Array.from(document.querySelectorAll(selector))
+        const matches = Array.from(document.querySelectorAll(selector))
 
-        let singleMatch = matches.find((button) => button.id === id)
+        const singleMatch = matches.find((button) => button.id === id)
         let result
         if (singleMatch && singleMatch.click) {
           console.log('normal click')
@@ -59,8 +59,8 @@ class PageUtils {
     if (this.bot.verbose) console.log(`Clicking for first ${selector}`)
 
     await this.bot.page.evaluate((selector) => {
-      let matches = Array.from(document.querySelectorAll(selector))
-      let singleMatch = matches[0]
+      const matches = Array.from(document.querySelectorAll(selector))
+      const singleMatch = matches[0]
       if (singleMatch) singleMatch.click()
     }, selector)
   }
@@ -376,7 +376,7 @@ export class XREngineBot {
       throw Error('Cannot navigate without a browser!')
     }
 
-    let parsedUrl = new URL(url)
+    const parsedUrl = new URL(url)
     const context = this.browser.defaultBrowserContext()
     console.log('permission allow for ', parsedUrl.origin)
     context.overridePermissions(parsedUrl.origin, ['microphone', 'camera'])

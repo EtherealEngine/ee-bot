@@ -5,8 +5,8 @@ import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
 import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
-import { XRAction } from '@xrengine/engine/src/xr/XRState'
-import { dispatchAction } from '@xrengine/hyperflux'
+import { XRAction, XRState } from '@xrengine/engine/src/xr/XRState'
+import { dispatchAction, getState } from '@xrengine/hyperflux'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
@@ -65,7 +65,8 @@ export async function xrSupported() {
 }
 
 export function xrInitialized() {
-  return Boolean(EngineRenderer.instance.xrSession)
+  const xrSession = getState(XRState).session.value
+  return Boolean(xrSession)
 }
 
 export function startXR() {
