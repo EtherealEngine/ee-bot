@@ -281,7 +281,14 @@ export class BotAction {
   static partyInvite(EmailorPhone:string){
     return new BotAction(BotActionType.Group.PartySettings.PartyInvite, {EmailorPhone})
   }
-
+  //Animate
+  static animateCharacter(animation){ // index/name of animation in the wheel
+    return new BotAction(BotActionType.AnimateCharacter, {animation})
+  } 
+  //Screenshot
+  static takeScreenshot(){
+    return new BotAction(BotActionType.TakeScreenshot, {})
+  } 
   //Friend (need to implement this later)
 
 
