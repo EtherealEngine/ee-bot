@@ -19,8 +19,9 @@
     "validate": "npm run test"
   },
   "dependencies": {
-    "gl-matrix": "^3.0.0",
-    "puppeteer": "18.0.5"
+    "gl-matrix": "^3.4.3",
+    "puppeteer": "^19.6.3",
+    "webxr-emulator": "git+https://github.com/XRFoundation/WebXR-emulator-extension.git"
   },
   "license": "ISC"
 }
