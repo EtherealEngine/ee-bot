@@ -537,10 +537,14 @@ export class XREngineBot {
   }
 
   async simulateCheckbox(selector,value){
-    
-    await this.evaluate( () => {
-      (<HTMLElement>document.querySelector(selector)).click()
-    })
+    await this.delay(1000)
+    console.log( "check box path is "+ selector)
+    const checkbox:any = await this.page.$(selector);
+    console.log( "check box is "+ checkbox)
+    const isChecked:any = await checkbox.evaluate((input) => input.checked);
+    if(isChecked != value){
+      await checkbox.click()
+    }
   }
 
   async closeInterface(){// generic method for closing canvas based interfaces
@@ -575,12 +579,13 @@ export class XREngineBot {
 
   async setSpatialAudioVideo(value){
     let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
-
+    let checkbox:any = "body > div.sc-hGPBjI.jjfORm.sc-fKVqWL.bmwfSo.MuiDialog-root.MuiModal-root > div.sc-bBHxTw.gaHdOe.MuiDialog-container.MuiDialog-scrollPaper > div > div > div > div:nth-child(1) > span > input"
     await this.openUserInfo()
     await this.Opensettings("Audio")
     await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
     await this.delay(1000)
     //simulate checkbox
+    await this.simulateCheckbox(checkbox,value)
     await this.closeInterface()
 
   }
