@@ -114,6 +114,27 @@ export class BotManager {
         case BotActionType.Delay:
           await bot.delay(action.data.timeout)
           break
+        //settings
+        case BotActionType.ChangeUserSettings.General.ChangeTheme:
+          await bot.changeTheme(action.data.uiType,action.data.theme)
+          break
+        case BotActionType.ChangeUserSettings.Audio.SetSpatialAudioVideo:
+          
+          break
+        case BotActionType.ChangeUserSettings.Audio.ChangeVolume:
+          await bot.changeVolume(action.data.audioType,action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Graphics.ChangeResolution:
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetAutomatic:
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetPostProcessing:
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetShadows:
+          break
+        case BotActionType.ChangeUserSettings.Return:
+          await bot.closeInterface()
+          break
         default:
           console.error('Unknown bot action')
           break

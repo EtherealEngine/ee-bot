@@ -1,7 +1,7 @@
 import fs from 'fs'
-import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
+import puppeteer, { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Page } from 'puppeteer'
 import { URL } from 'url'
-
+import expect from "expect-puppeteer";
 import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
 
 import { getOS } from './utils/getOS'
@@ -89,8 +89,8 @@ export class XREngineBot {
     width: number
     height: number
   }
-  browser: puppeteer.Browser
-  page: puppeteer.Page
+  browser: Browser
+  page: Page
   pageUtils: PageUtils
 
   constructor(args: BotProps = {}) {
@@ -482,9 +482,10 @@ export class XREngineBot {
     console.log('clicking', id)
     await this.page.evaluate((id: string) => {
       const el = document.getElementById(id)
-      console.log(el)
+      console.log(`found element is ${el}`)
       // @ts-ignore
       el.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      console.log(`dispatched mouse event`)
     }, id)
   }
 
@@ -497,6 +498,76 @@ export class XREngineBot {
     await this.page.focus(selector)
   }
 
+  async openUserInfo(){
+    let userInfoPath:any = "#engine-container > section > div > button:nth-child(1)"
+    await this.pageUtils.clickSelectorFirstMatch(userInfoPath)
+  
+  }
+
+  async Opensettings(settingsType){
+    let settingsButtonPath:any = "body > div.sc-hGPBjI.jjfORm.sc-fKVqWL.bmwfSo.MuiDialog-root.MuiModal-root > div.sc-bBHxTw.gaHdOe.MuiDialog-container.MuiDialog-scrollPaper > div > div > div > div.sc-ezbkAF._profileContainer_1th5p_36.MuiBox-root > button"
+    let settingsHeader:any = "[id^=':r'] > div > div > div"
+      
+    await this.waitForSelector(settingsButtonPath , 10000)
+    await this.pageUtils.clickSelectorFirstMatch(settingsButtonPath)
+    const settingsContainer:any = await this.waitForSelector(settingsHeader , 10000)
+    await this.delay(1000)
+    console.log("selectors " + settingsContainer)
+    // sadly hardcoded tried to scrape text within button, xpath and eval but all return null 
+    var button;
+    if(settingsType.toLowerCase() === "general"){
+      button = await settingsContainer?.$('button:nth-child(1)')//general
+    }
+    else if(settingsType.toLowerCase() === "audio"){
+      button = await settingsContainer?.$('button:nth-child(2)') // audio 
+    }
+    else{
+      button = await settingsContainer?.$('button:nth-child(3)')//graphics 
+    }
+    console.log("button "+ button)
+    await button.click()
+    await this.delay(1000)
+    //let settingsTypeButton:any = await this.page.$x(settingsHeader + `//button[contains(text(),'${settingsType}')]`)[0]     //settingsTypeButton.click()
+    
+      
+  }
+
+  async closeInterface(){// generic method for closing canvas based interfaces
+    // add ids for everything else later
+    console.log("closing interface")
+    await this.delay(1000)
+    await this.evaluate( () => {
+      (<HTMLElement>document.querySelector("body > div.sc-hGPBjI.jjfORm.sc-fKVqWL.bmwfSo.MuiDialog-root.MuiModal-root > div.sc-dJjYzT.MGqHf.MuiBackdrop-root.sc-kfPuZi.jgoTkV")).click()
+    })
+  }
+
+
+  async changeTheme(uiType,theme){ // uses lowercase string for now, will change to engine enums later
+
+    // add ids for everything else later
+    
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+    let uiTypeId:any = "#mui-component-select-" + uiType
+    let themeContainer:any = "#menu-client > div.sc-bkkeKt.fUoJgp.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.sc-khQegj.hpxxVA.sc-bkkeKt.jEa-DAa.MuiPaper-root.MuiMenu-paper._selectPaper_y8s6m_1.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation8.sc-cNKqjZ.VtMiR.MuiPopover-paper > ul"
+
+    await this.openUserInfo()
+    await this.Opensettings("General")
+    await this.waitForSelector(uiTypeContainer ,10000)
+    await this.delay(1000)
+    const selectTheme:any = await this.page.$(uiTypeId)
+    await selectTheme.click();
+    const option:any = await this.page.$(themeContainer + `>li[data-value=${theme}]`)
+    await option.click()
+    await this.delay(1000)
+    await this.closeInterface()
+    
+  }
+
+  async changeVolume(audioType,value){
+    await this.openUserInfo()
+    await this.Opensettings("Audio")
+    
+  }
   /**
    * Leaves the room and closes the browser instance without exiting node
    */
@@ -509,3 +580,5 @@ export class XREngineBot {
     }
   }
 }
+
+

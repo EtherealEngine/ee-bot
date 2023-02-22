@@ -6,8 +6,8 @@ const SettingsGeneralActionType = {
 }
 
 const SettingsAudioActionType = {
-    SetSpatialAudioVideo:'setSpatialAudioVideo',
-    ChangeVolume:'changeVolume', // two inputs, volume type ( user, microphone , scene, etc) and volume value 
+  SetSpatialAudioVideo:'setSpatialAudioVideo',
+  ChangeVolume:'changeVolume', // two inputs, volume type ( user, microphone , scene, etc) and volume value 
 }
 
 const SettingsGraphicsActionType = {
