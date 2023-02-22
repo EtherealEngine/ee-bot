@@ -532,6 +532,17 @@ export class XREngineBot {
       
   }
 
+  async simulateSlider(selector,value){
+
+  }
+
+  async simulateCheckbox(selector,value){
+    
+    await this.evaluate( () => {
+      (<HTMLElement>document.querySelector(selector)).click()
+    })
+  }
+
   async closeInterface(){// generic method for closing canvas based interfaces
     // add ids for everything else later
     console.log("closing interface")
@@ -540,7 +551,6 @@ export class XREngineBot {
       (<HTMLElement>document.querySelector("body > div.sc-hGPBjI.jjfORm.sc-fKVqWL.bmwfSo.MuiDialog-root.MuiModal-root > div.sc-dJjYzT.MGqHf.MuiBackdrop-root.sc-kfPuZi.jgoTkV")).click()
     })
   }
-
 
   async changeTheme(uiType,theme){ // uses lowercase string for now, will change to engine enums later
 
@@ -552,7 +562,7 @@ export class XREngineBot {
 
     await this.openUserInfo()
     await this.Opensettings("General")
-    await this.waitForSelector(uiTypeContainer ,10000)
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
     await this.delay(1000)
     const selectTheme:any = await this.page.$(uiTypeId)
     await selectTheme.click();
@@ -563,10 +573,71 @@ export class XREngineBot {
     
   }
 
-  async changeVolume(audioType,value){
+  async setSpatialAudioVideo(value){
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+
     await this.openUserInfo()
     await this.Opensettings("Audio")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+    await this.delay(1000)
+    //simulate checkbox
+    await this.closeInterface()
+
+  }
+
+  async changeVolume(audioType,value){
+
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+
+    await this.openUserInfo()
+    await this.Opensettings("Audio")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+    await this.delay(1000)
+    //simulate sliders
+    await this.closeInterface()
     
+  }
+
+  async changeResolution(value){
+
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+    await this.openUserInfo()
+    await this.Opensettings("Graphics")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+
+    await this.delay(1000)
+    //simulate sliders
+    await this.closeInterface()
+  }
+
+  async setAutomatic(value){
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+    await this.openUserInfo()
+    await this.Opensettings("Graphics")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+    await this.delay(1000)
+    //simulate checkbox
+    await this.closeInterface()
+  }
+
+  async setPostProcessing(value){
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+    await this.openUserInfo()
+    await this.Opensettings("Graphics")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+    await this.delay(1000)
+    //simulate checkbox
+    await this.closeInterface()
+  }
+
+  async setShadows(value){
+    let uiTypeContainer:any = "/html/body/div[2]/div[3]/div/div/div/div"
+    await this.openUserInfo()
+    await this.Opensettings("Graphics")
+    await this.waitForSelector('xpath/' + uiTypeContainer ,10000)
+    await this.delay(1000)
+    //simulate checkbox
+    await this.closeInterface()
   }
   /**
    * Leaves the room and closes the browser instance without exiting node

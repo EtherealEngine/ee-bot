@@ -119,18 +119,22 @@ export class BotManager {
           await bot.changeTheme(action.data.uiType,action.data.theme)
           break
         case BotActionType.ChangeUserSettings.Audio.SetSpatialAudioVideo:
-          
+          await bot.setSpatialAudioVideo(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Audio.ChangeVolume:
           await bot.changeVolume(action.data.audioType,action.data.value)
           break
         case BotActionType.ChangeUserSettings.Graphics.ChangeResolution:
+          await bot.changeResolution(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Graphics.SetAutomatic:
+          await bot.setAutomatic(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Graphics.SetPostProcessing:
+          await bot.setPostProcessing(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Graphics.SetShadows:
+          await bot.setShadows(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Return:
           await bot.closeInterface()
