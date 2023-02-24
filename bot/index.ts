@@ -1,5 +1,6 @@
 import fs from 'fs'
-import puppeteer, { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
+import * as puppeteer from 'puppeteer'
+import { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
 import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
@@ -32,7 +33,7 @@ class PageUtils {
     await this.bot.page.waitForFunction(`document.getElementById('${id}')`)
 
     await this.bot.page.evaluate(
-      (selector: K, id: string) => {
+      (selector: any, id: string) => {
         const matches = Array.from(document.querySelectorAll(selector))
 
         const singleMatch = matches.find((button) => button.id === id)
