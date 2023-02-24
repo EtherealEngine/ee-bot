@@ -116,13 +116,13 @@ export class BotManager {
           break
         //settings
         case BotActionType.ChangeUserSettings.General.ChangeTheme:
-          await bot.changeTheme(action.data.uiType,action.data.theme)
+          await bot.changeTheme(action.data.uiType, action.data.theme)
           break
         case BotActionType.ChangeUserSettings.Audio.SetSpatialAudioVideo:
           await bot.setSpatialAudioVideo(action.data.value)
           break
         case BotActionType.ChangeUserSettings.Audio.ChangeVolume:
-          await bot.changeVolume(action.data.audioType,action.data.value)
+          await bot.changeVolume(action.data.audioType, action.data.value)
           break
         case BotActionType.ChangeUserSettings.Graphics.ChangeResolution:
           await bot.changeResolution(action.data.value)

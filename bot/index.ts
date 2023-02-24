@@ -1,19 +1,20 @@
 import fs from 'fs'
+import { P } from 'pino'
+import { Input } from 'postcss'
 import puppeteer, { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Page } from 'puppeteer'
 import { URL } from 'url'
+
 import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
 
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
-import { Input } from 'postcss';
-import { P } from 'pino';
 
 class PageUtils {
   bot: XREngineBot
-  uiCanvas:string
+  uiCanvas: string
   constructor(bot) {
     this.bot = bot
-    this.uiCanvas = "body > div.MuiDialog-root.MuiModal-root > div.MuiDialog-container.MuiDialog-scrollPaper"
+    this.uiCanvas = 'body > div.MuiDialog-root.MuiModal-root > div.MuiDialog-container.MuiDialog-scrollPaper'
   }
   async clickSelectorClassRegex(selector, classRegex) {
     if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${classRegex}`)
@@ -501,185 +502,202 @@ export class XREngineBot {
     await this.page.focus(selector)
   }
 
-  async openUserInfo(){
-    console.log("opening user info")
-    let userInfoPath:any = "#engine-container > section > div > button.MuiButtonBase-root.MuiIconButton-root"
-    await this.pageUtils.clickSelectorFirstMatch(userInfoPath) // bcz user info is the first button, again must fall back to nth of type
+  async openUserInfo() {
+    console.log('opening user info')
+    let userInfoPath: any = '#engine-container > section > div > button.MuiButtonBase-root.MuiIconButton-root'
+    await this.pageUtils.clickSelectorFirstMatch(userInfoPath) // bcz user info is the first button, again must fall back to nth of type for the others, ids prefered
     await this.delay(1000)
   }
 
-  async Opensettings(settingsType){
-    let settingsButton:any = this.pageUtils.uiCanvas + "> div > div > div > div.MuiBox-root > button"
-    let settingsHeaderPath:any = "[id^=':r'] > div > div > div"
-    console.log("opening settings")
+  async Opensettings(settingsType) {
+    let settingsButton: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > button'
+    let settingsHeaderPath: any = "[id^=':r'] > div > div > div"
+    console.log('opening settings')
     await this.page.waitForSelector(settingsButton)
     await this.pageUtils.clickSelectorFirstMatch(settingsButton)
-    const settingsContainer:any = await this.waitForSelector(settingsHeaderPath , 10000)
+    const settingsContainer: any = await this.waitForSelector(settingsHeaderPath, 10000)
     await this.delay(1000)
-    console.log("selectors " + settingsContainer)
-    // sadly hardcoded tried to scrape the text within button using xpath and eval but all return null 
-    var button;
-    switch (settingsType.toLowerCase()){
-        case 'general':
+    console.log('selectors ' + settingsContainer)
+    // sadly hardcoded tried to scrape the text within button using xpath and eval but all return null
+    var button
+    switch (settingsType.toLowerCase()) {
+      case 'general':
         button = await settingsContainer?.$('button:nth-child(1)')
         break
-        case 'audio':
+      case 'audio':
         button = await settingsContainer?.$('button:nth-child(2)')
         break
-        case 'graphics':
+      case 'graphics':
         button = await settingsContainer?.$('button:nth-child(3)')
         break
-        default:
-          console.log("settings type not avaialble")
+      default:
+        console.log('settings type not avaialble')
     }
-    console.log("button "+ button)
+    console.log('button ' + button)
     await button.click()
     await this.delay(1000)
     //let settingsTypeButton:any = await this.page.$x(settingsHeader + `//button[contains(text(),'${settingsType}')]`)[0]     //settingsTypeButton.click()
-    
   }
- 
-  async closeInterface(){// generic method for closing canvas based interfaces
+
+  async closeInterface() {
+    // generic method for closing canvas based interfaces
     // add ids for everything else later
-    console.log("closing interface")
+    console.log('closing interface')
     await this.delay(300)
     await this.pageUtils.clickSelectorFirstMatch(this.pageUtils.uiCanvas)
   }
 
-  async simulateSlider(selector,value:number){
-    console.log("slider path is "+ selector)
-    var sliderElement:any = await this.page.$(selector);
-    const sliderBoundingBox = await sliderElement.boundingBox();
+  async simulateSlider(selector, value: number) {
+    console.log('slider path is ' + selector)
+    var sliderElement: any = await this.page.$(selector)
+    const sliderBoundingBox = await sliderElement.boundingBox()
     const sliderHandle = await sliderElement!.evaluateHandle((el) => {
-      const sliderHandle = el.querySelector('.MuiSlider-thumb') as HTMLElement;
-      return sliderHandle;
-    });
-    const sliderWidth = sliderBoundingBox!.width;
+      const sliderHandle = el.querySelector('.MuiSlider-thumb') as HTMLElement
+      return sliderHandle
+    })
+    const sliderWidth = sliderBoundingBox!.width
     const sliderMin = 0
     const sliderMax = 100
-    value = Math.min(Math.max(value, sliderMin + 10), sliderMax - 10); // for some reason these are the visual min and max of slider, needs investigation 
-    const handlePosition =
-      sliderBoundingBox!.x +
-      sliderWidth * ((value - sliderMin) / (sliderMax - sliderMin));
-    await sliderHandle.hover();
-    await sliderHandle.click({ button: 'left' });
-    await this.page.mouse.move(handlePosition, sliderBoundingBox!.y);
-    await this.page.mouse.down();
-    await this.page.mouse.up();
+    value = Math.min(Math.max(value, sliderMin + 10), sliderMax - 10) // for some reason these are the visual min and max of slider, needs investigation
+    const handlePosition = sliderBoundingBox!.x + sliderWidth * ((value - sliderMin) / (sliderMax - sliderMin))
+    await sliderHandle.hover()
+    await sliderHandle.click({ button: 'left' })
+    await this.page.mouse.move(handlePosition, sliderBoundingBox!.y)
+    await this.page.mouse.down()
+    await this.page.mouse.up()
     await this.delay(200)
   }
 
-  async simulateCheckbox(selector,value:boolean){
-    console.log( "check box path is "+ selector);
-    const checkbox:any = await this.page.$(selector);
-    console.log( "check box is "+ checkbox);
-    const isCheckbox = await checkbox.evaluate((element:HTMLElement) => element.tagName.toLowerCase() === 'input' && (element as HTMLInputElement).type.toLowerCase() === 'checkbox');
-    if(!isCheckbox){
-      return;
+  async simulateCheckbox(selector, value: boolean) {
+    console.log('check box path is ' + selector)
+    const checkbox: any = await this.page.$(selector)
+    console.log('check box is ' + checkbox)
+    const isCheckbox = await checkbox.evaluate(
+      (element: HTMLElement) =>
+        element.tagName.toLowerCase() === 'input' && (element as HTMLInputElement).type.toLowerCase() === 'checkbox'
+    )
+    if (!isCheckbox) {
+      return
     }
-    const isDisabled = await checkbox.evaluate((element:HTMLInputElement) => element.disabled);
-    if(isDisabled){
-      return;
+    const isDisabled = await checkbox.evaluate((element: HTMLInputElement) => element.disabled)
+    if (isDisabled) {
+      return
     }
-    const isChecked:boolean = await checkbox.evaluate((element:HTMLInputElement) => element.checked);
-    if(isChecked == value){
-      return;
-    }  
+    const isChecked: boolean = await checkbox.evaluate((element: HTMLInputElement) => element.checked)
+    if (isChecked == value) {
+      return
+    }
     await checkbox.click()
     await this.delay(200)
   }
 
-  async changeTheme(uiType,theme){ // uses lowercase string for now, will change to engine enums later
+  async changeTheme(uiType, theme) {
+    // uses lowercase string for now, will change to engine enums later
 
     // add ids for everything else later
-   
-    let uiTypeContainer:any =  this.pageUtils.uiCanvas + "> div > div > div > div"
-    let uiTypeId:any = "#mui-component-select-" + uiType
-    let themeContainer:any = `#menu-${uiType}` + "> div.MuiPaper-root.MuiPaper-rounded.MuiPaper-root.MuiMenu-paper.MuiPaper-rounded.MuiPopover-paper > ul"
+
+    let uiTypeContainer: any = this.pageUtils.uiCanvas + '> div > div > div > div'
+    let uiTypeId: any = '#mui-component-select-' + uiType
+    let themeContainer: any =
+      `#menu-${uiType}` +
+      '> div.MuiPaper-root.MuiPaper-rounded.MuiPaper-root.MuiMenu-paper.MuiPaper-rounded.MuiPopover-paper > ul'
 
     await this.openUserInfo()
-    await this.Opensettings("General")
+    await this.Opensettings('General')
 
-    console.log("changing theme")
-    await this.delay(1000) 
+    console.log('changing theme')
+    await this.delay(1000)
     // TODO: add guard conditions scrape for existing uis and themes and validate
-    await this.waitForSelector(uiTypeContainer ,10000)
-    await this.waitForSelector(uiTypeId ,10000)
-    const selectTheme:any = await this.page.$(uiTypeId)
-    await selectTheme.click();
-    await this.waitForSelector(themeContainer + `>li[data-value=${theme}]` ,10000)
-    const option:any = await this.page.$(themeContainer + `>li[data-value=${theme}]`) 
+    await this.waitForSelector(uiTypeContainer, 10000)
+    await this.waitForSelector(uiTypeId, 10000)
+    const selectTheme: any = await this.page.$(uiTypeId)
+    await selectTheme.click()
+    await this.waitForSelector(themeContainer + `>li[data-value=${theme}]`, 10000)
+    const option: any = await this.page.$(themeContainer + `>li[data-value=${theme}]`)
     await option.click()
     await this.delay(1000)
     await this.closeInterface()
-    
   }
 
-  async setSpatialAudioVideo(value){
-    let checkbox:any = this.pageUtils.uiCanvas + "> div > div > div > div > span.MuiButtonBase-root.MuiCheckbox-root > input[type='checkbox']"
+  async setSpatialAudioVideo(value) {
+    let checkbox: any =
+      this.pageUtils.uiCanvas +
+      "> div > div > div > div > span.MuiButtonBase-root.MuiCheckbox-root > input[type='checkbox']"
     await this.openUserInfo()
-    await this.Opensettings("Audio")
+    await this.Opensettings('Audio')
     await this.delay(1000)
-    await this.simulateCheckbox(checkbox,value)
+    await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
-
   }
 
-  async changeVolume(audioType,value){
+  async changeVolume(audioType, value) {
     //if the relative ordering of the sliders in UI changes the code breaks will look at better options later
     //for any changes the map must change here , the beast way would be to bind the volume sliders to Ids and map function inputs to the IDs
-    const audiotypemap: { [id: string]: string; } = {
-      'music':'7','scene':'6','notification':'5',
-      'user':'4','microphone':'3','master':'2'
-    };
-    const audiotypes = []  
-    
-    let slider:any = this.pageUtils.uiCanvas + "> div > div > div > " + `div.MuiBox-root:nth-of-type(${audiotypemap[audioType.toLowerCase()]})`  + "> span"
+    const audiotypemap: { [id: string]: string } = {
+      music: '7',
+      scene: '6',
+      notification: '5',
+      user: '4',
+      microphone: '3',
+      master: '2'
+    }
+    const audiotypes = []
+
+    let slider: any =
+      this.pageUtils.uiCanvas +
+      '> div > div > div > ' +
+      `div.MuiBox-root:nth-of-type(${audiotypemap[audioType.toLowerCase()]})` +
+      '> span'
     await this.openUserInfo()
-    await this.Opensettings("Audio")
+    await this.Opensettings('Audio')
     await this.delay(1000)
-    await this.simulateSlider(slider,value)
+    await this.simulateSlider(slider, value)
     await this.closeInterface()
-    
   }
 
-  async changeResolution(value){
-    let slider:any = this.pageUtils.uiCanvas + "> div > div > div > div.MuiBox-root > span"
+  async changeResolution(value) {
+    let slider: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > span'
     await this.openUserInfo()
-    await this.Opensettings("Graphics")
+    await this.Opensettings('Graphics')
     await this.delay(1000)
-    await this.simulateSlider(slider,value)
+    await this.simulateSlider(slider, value)
     await this.closeInterface()
   }
 
   // might be able to combine these functions worth checking later
-  async setAutomatic(value){
-    let checkbox:any = this.pageUtils.uiCanvas + "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(3) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
+  async setAutomatic(value) {
+    let checkbox: any =
+      this.pageUtils.uiCanvas +
+      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(3) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
 
     await this.openUserInfo()
-    await this.Opensettings("Graphics")
+    await this.Opensettings('Graphics')
     await this.delay(1000)
-    await this.simulateCheckbox(checkbox,value)
+    await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
   }
 
-  async setPostProcessing(value){
-    let checkbox:any = this.pageUtils.uiCanvas + "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(1) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
+  async setPostProcessing(value) {
+    let checkbox: any =
+      this.pageUtils.uiCanvas +
+      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(1) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
 
     await this.openUserInfo()
-    await this.Opensettings("Graphics")
+    await this.Opensettings('Graphics')
     await this.delay(1000)
-    await this.simulateCheckbox(checkbox,value)
+    await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
   }
 
-  async setShadows(value){
-    let checkbox:any =  this.pageUtils.uiCanvas + "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(2) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
+  async setShadows(value) {
+    let checkbox: any =
+      this.pageUtils.uiCanvas +
+      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(2) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
 
     await this.openUserInfo()
-    await this.Opensettings("Graphics")
+    await this.Opensettings('Graphics')
     await this.delay(1000)
-    await this.simulateCheckbox(checkbox,value)
+    await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
   }
   /**
@@ -694,5 +712,3 @@ export class XREngineBot {
     }
   }
 }
-
-

@@ -16,7 +16,8 @@
   "scripts": {
     "check-errors": "tsc --noemit",
     "build-publish": "rimraf dist && cti entrypoint ./src -o index.ts && cross-env APP_ENV=production rollup -c",
-    "validate": "npm run test"
+    "validate": "npm run test",
+    "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
