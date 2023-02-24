@@ -121,7 +121,7 @@ export class XREngineBot {
     // }
   }
 
-  async keyPress(key, numMilliSeconds) {
+  async keyPress(key, numMilliSeconds: number) {
     console.log('Running with key ' + key)
     const interval = setInterval(() => {
       console.log('Pressing', key)
@@ -137,7 +137,7 @@ export class XREngineBot {
     )
   }
 
-  async sendMessage(message) {
+  async sendMessage(message: string) {
     console.log('send message: ' + message)
     await this.clickElementByClass('button', 'openChat')
     await this.pageUtils.clickSelectorId('input', 'newMessage')
@@ -150,7 +150,7 @@ export class XREngineBot {
     return this.activeChannel && this.activeChannel.chatState
   }
 
-  async sendAudio(duration) {
+  async sendAudio(duration: number) {
     console.log('Sending audio...')
     await this.pageUtils.clickSelectorId('button', 'UserAudio')
     await this.waitForTimeout(duration)
@@ -161,12 +161,12 @@ export class XREngineBot {
     await this.pageUtils.clickSelectorId('button', 'UserAudio')
   }
 
-  async recvAudio(duration) {
+  async recvAudio(duration: number) {
     console.log('Receiving audio...')
     await this.waitForSelector('[class*=PartyParticipantWindow]', duration)
   }
 
-  async sendVideo(duration) {
+  async sendVideo(duration: number) {
     console.log('Sending video...')
     await this.pageUtils.clickSelectorId('button', 'UserVideo')
     await this.waitForTimeout(duration)
@@ -177,12 +177,12 @@ export class XREngineBot {
     await this.pageUtils.clickSelectorId('button', 'UserVideo')
   }
 
-  async recvVideo(duration) {
+  async recvVideo(duration: number) {
     console.log('Receiving video...')
     await this.waitForSelector('[class*=PartyParticipantWindow]', duration)
   }
 
-  async delay(timeout) {
+  async delay(timeout: number) {
     console.log(`Waiting for ${timeout} ms... `)
     await this.waitForTimeout(timeout)
   }
@@ -468,11 +468,11 @@ export class XREngineBot {
     await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
   }
 
-  async waitForTimeout(timeout) {
+  async waitForTimeout(timeout: number) {
     return await new Promise<void>((resolve) => setTimeout(() => resolve(), timeout))
   }
 
-  async waitForSelector(selector, timeout) {
+  async waitForSelector(selector, timeout: number) {
     return this.page.waitForSelector(selector, { timeout })
   }
 
