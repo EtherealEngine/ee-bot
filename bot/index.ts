@@ -509,7 +509,7 @@ export class XREngineBot {
     await this.delay(1000)
   }
 
-  async Opensettings(settingsType) {
+  async Opensettings(settingsType: string) {
     let settingsButton: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > button'
     let settingsHeaderPath: any = "[id^=':r'] > div > div > div"
     console.log('opening settings')
@@ -536,7 +536,6 @@ export class XREngineBot {
     console.log('button ' + button)
     await button.click()
     await this.delay(1000)
-    //let settingsTypeButton:any = await this.page.$x(settingsHeader + `//button[contains(text(),'${settingsType}')]`)[0]     //settingsTypeButton.click()
   }
 
   async closeInterface() {
@@ -547,7 +546,7 @@ export class XREngineBot {
     await this.pageUtils.clickSelectorFirstMatch(this.pageUtils.uiCanvas)
   }
 
-  async simulateSlider(selector, value: number) {
+  async simulateSlider(selector: string, value: number) {
     console.log('slider path is ' + selector)
     var sliderElement: any = await this.page.$(selector)
     const sliderBoundingBox = await sliderElement.boundingBox()
@@ -568,7 +567,7 @@ export class XREngineBot {
     await this.delay(200)
   }
 
-  async simulateCheckbox(selector, value: boolean) {
+  async simulateCheckbox(selector: string, value: boolean) {
     console.log('check box path is ' + selector)
     const checkbox: any = await this.page.$(selector)
     console.log('check box is ' + checkbox)
@@ -591,11 +590,9 @@ export class XREngineBot {
     await this.delay(200)
   }
 
-  async changeTheme(uiType, theme) {
+  async changeTheme(uiType: string, theme: string) {
     // uses lowercase string for now, will change to engine enums later
-
     // add ids for everything else later
-
     let uiTypeContainer: any = this.pageUtils.uiCanvas + '> div > div > div > div'
     let uiTypeId: any = '#mui-component-select-' + uiType
     let themeContainer: any =
@@ -619,7 +616,7 @@ export class XREngineBot {
     await this.closeInterface()
   }
 
-  async setSpatialAudioVideo(value) {
+  async setSpatialAudioVideo(value: boolean) {
     let checkbox: any =
       this.pageUtils.uiCanvas +
       "> div > div > div > div > span.MuiButtonBase-root.MuiCheckbox-root > input[type='checkbox']"
@@ -630,7 +627,7 @@ export class XREngineBot {
     await this.closeInterface()
   }
 
-  async changeVolume(audioType, value) {
+  async changeVolume(audioType: string, value: number) {
     //if the relative ordering of the sliders in UI changes the code breaks will look at better options later
     //for any changes the map must change here , the beast way would be to bind the volume sliders to Ids and map function inputs to the IDs
     const audiotypemap: { [id: string]: string } = {
@@ -655,7 +652,7 @@ export class XREngineBot {
     await this.closeInterface()
   }
 
-  async changeResolution(value) {
+  async changeResolution(value: number) {
     let slider: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > span'
     await this.openUserInfo()
     await this.Opensettings('Graphics')
@@ -665,7 +662,7 @@ export class XREngineBot {
   }
 
   // might be able to combine these functions worth checking later
-  async setAutomatic(value) {
+  async setAutomatic(value: boolean) {
     let checkbox: any =
       this.pageUtils.uiCanvas +
       "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(3) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
@@ -677,7 +674,7 @@ export class XREngineBot {
     await this.closeInterface()
   }
 
-  async setPostProcessing(value) {
+  async setPostProcessing(value: boolean) {
     let checkbox: any =
       this.pageUtils.uiCanvas +
       "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(1) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
@@ -689,7 +686,7 @@ export class XREngineBot {
     await this.closeInterface()
   }
 
-  async setShadows(value) {
+  async setShadows(value: boolean) {
     let checkbox: any =
       this.pageUtils.uiCanvas +
       "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(2) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
