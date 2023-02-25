@@ -20,16 +20,14 @@ const SettingsGraphicsActionType = {
 const SettingsActionType = {
   General: SettingsGeneralActionType,
   Audio: SettingsAudioActionType,
-  Graphics: SettingsGraphicsActionType,
-  Return: 'return'
+  Graphics: SettingsGraphicsActionType
 }
 
 const AvatarActionType = {
   SearchAvatar: 'searchAvatar', // search by perfix
   SelectAvatar: 'selectAvatar', // select by index or prefix, to be used after Search avatar
   CreateReadyPlayerMeAvatar: 'createReadyPlayerMeAvatar', // will use the API to be implemented later
-  CreateCustomAvatar: 'createCustomAvatar', // upload with name , avatar url , thumbnail url (only url version to be implemented)
-  Return: 'return'
+  CreateCustomAvatar: 'createCustomAvatar' // upload with name , avatar url , thumbnail url (only url version to be implemented)
 }
 
 //Bot Group Actions
@@ -89,6 +87,9 @@ export const BotActionType = {
   // flow control
   OpIf: 'opIf',
   Delay: 'delay',
+
+  //common
+  CloseInterface: 'closeInterface',
 
   //Change Settings
   ChangeUserSettings: SettingsActionType,
@@ -241,12 +242,8 @@ export class BotAction {
   }
 
   // Returns, need to think of a better way to implement this, like one return which returns as per arguement
-  static UserSettingsReturn() {
-    return new BotAction(BotActionType.ChangeUserSettings.Return, {})
-  }
-
-  static AvatarReturn() {
-    return new BotAction(BotActionType.ChangeUserAvatar.Return, {})
+  static closeInterface() {
+    return new BotAction(BotActionType.CloseInterface, {})
   }
   //Sharing
 
@@ -288,8 +285,8 @@ export class BotAction {
     return new BotAction(BotActionType.AnimateCharacter, { animation })
   }
   //Screenshot
-  static takeScreenshot() {
-    return new BotAction(BotActionType.TakeScreenshot, {})
+  static takeScreenshot(storagePath: string) {
+    return new BotAction(BotActionType.TakeScreenshot, { storagePath })
   }
   //Friend (need to implement this later)
 }

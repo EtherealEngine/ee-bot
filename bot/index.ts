@@ -69,6 +69,12 @@ class PageUtils {
       if (singleMatch) singleMatch.click()
     }, selector)
   }
+  async getParentElement(elementHandle) {
+    const parentElementHandle: any = await this.bot.page.evaluateHandle((element) => {
+      return element.parentElement
+    }, elementHandle)
+    return parentElementHandle.asElement()
+  }
 }
 
 type BotProps = {
@@ -697,6 +703,57 @@ export class XREngineBot {
     await this.delay(1000)
     await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
+  }
+
+  async animateCharacter(animation) {
+    let animWheelButtonPath: any =
+      '#engine-container > section > div > button.MuiButtonBase-root.MuiIconButton-root:nth-of-type(3)'
+    await this.pageUtils.clickSelectorFirstMatch(animWheelButtonPath)
+    await this.delay(3000)
+    let animWheelPath: any = "#engine-container > div > section[class*='emoteMenu'] > div[class*='itemContainer']"
+    let animWheelRightPath: any = animWheelPath + "> div > button > svg[data-testid*='Next']"
+    const animWheelRightButton = await this.pageUtils.getParentElement(await this.page.$(animWheelRightPath))
+    console.log('right button', animWheelRightButton)
+    let animWheelLeftPath: any = animWheelPath + "> div > button > svg[data-testid*='Before']"
+    const animWheelLeftButton = await this.pageUtils.getParentElement(await this.page.$(animWheelLeftPath))
+    console.log('left button', animWheelLeftButton)
+    let animWheelTargetAnimPath: any =
+      animWheelPath + `> div[class*=menuItemBlock] > div > button > img[alt*='${animation}' i]`
+    var isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
+    while (!isDisabled) {
+      var animImage = await this.page.$$(animWheelTargetAnimPath)
+      console.log('animations are ', animImage)
+      if ((await animImage).length === 0) {
+        await animWheelRightButton.click()
+        isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
+        if (isDisabled) {
+          console.log('ERR:animation not found')
+          break
+        }
+        await this.delay(1000)
+        continue
+      }
+      var animButton = await this.pageUtils.getParentElement(animImage[0])
+      await animButton.click()
+      break
+    }
+
+    await this.delay(5000)
+    // closing not needed
+    // all the anims have an alt name for thier icons we leverage that
+    // input anim name and search in the wheel if doesnt exist we press the right wheel button to move the next page
+    // continue till right wheel button is disabled
+    // if not found return animation not avaialble notif
+  }
+
+  async takeScreenshot(storagePath = '../XREngine_Bot_screenshots/') {
+    if (!fs.existsSync(storagePath)) {
+      fs.mkdirSync(storagePath)
+    }
+    let filename = `XRengine_Bot_screenshot${new Date().toJSON().slice(0, 10)}.path`
+    const filepath = storagePath + filename
+    console.warn('Trying to take a screenshot')
+    this.page.screenshot({ path: filepath })
   }
   /**
    * Leaves the room and closes the browser instance without exiting node

@@ -136,7 +136,7 @@ export class BotManager {
         case BotActionType.ChangeUserSettings.Graphics.SetShadows:
           await bot.setShadows(action.data.value)
           break
-        case BotActionType.ChangeUserSettings.Return:
+        case BotActionType.CloseInterface:
           await bot.closeInterface()
           break
         default:
