@@ -139,6 +139,12 @@ export class BotManager {
         case BotActionType.CloseInterface:
           await bot.closeInterface()
           break
+        case BotActionType.AnimateCharacter:
+          await bot.animateCharacter(action.data.animation)
+          break
+        case BotActionType.TakeScreenshot:
+          await bot.takeScreenshot(action.data.storagePath)
+          break
         default:
           console.error('Unknown bot action')
           break

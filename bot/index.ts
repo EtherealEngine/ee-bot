@@ -745,10 +745,9 @@ export class XREngineBot {
   }
 
   async takeScreenshot(storagePath = '../XREngine_Bot_screenshots') {
-    
-    const timestamp = new Date().toISOString().replace(/[:.-]/g, "_");
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, '_')
     const filename = `XRengine_Bot_screenshot_${timestamp}`
-    const filepath = path.join(__dirname, storagePath);
+    const filepath = path.join(__dirname, storagePath)
     if (!fs.existsSync(filepath)) {
       fs.mkdirSync(filepath)
     }
