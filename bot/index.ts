@@ -1,4 +1,5 @@
 import fs from 'fs'
+import * as path from 'path'
 import { P } from 'pino'
 import { Input } from 'postcss'
 import * as puppeteer from 'puppeteer'
@@ -713,16 +714,13 @@ export class XREngineBot {
     let animWheelPath: any = "#engine-container > div > section[class*='emoteMenu'] > div[class*='itemContainer']"
     let animWheelRightPath: any = animWheelPath + "> div > button > svg[data-testid*='Next']"
     const animWheelRightButton = await this.pageUtils.getParentElement(await this.page.$(animWheelRightPath))
-    console.log('right button', animWheelRightButton)
     let animWheelLeftPath: any = animWheelPath + "> div > button > svg[data-testid*='Before']"
     const animWheelLeftButton = await this.pageUtils.getParentElement(await this.page.$(animWheelLeftPath))
-    console.log('left button', animWheelLeftButton)
     let animWheelTargetAnimPath: any =
       animWheelPath + `> div[class*=menuItemBlock] > div > button > img[alt*='${animation}' i]`
     var isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
     while (!isDisabled) {
       var animImage = await this.page.$$(animWheelTargetAnimPath)
-      console.log('animations are ', animImage)
       if ((await animImage).length === 0) {
         await animWheelRightButton.click()
         isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
@@ -746,14 +744,16 @@ export class XREngineBot {
     // if not found return animation not avaialble notif
   }
 
-  async takeScreenshot(storagePath = '../XREngine_Bot_screenshots/') {
-    if (!fs.existsSync(storagePath)) {
-      fs.mkdirSync(storagePath)
+  async takeScreenshot(storagePath = '../XREngine_Bot_screenshots') {
+    
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, "_");
+    const filename = `XRengine_Bot_screenshot_${timestamp}`
+    const filepath = path.join(__dirname, storagePath);
+    if (!fs.existsSync(filepath)) {
+      fs.mkdirSync(filepath)
     }
-    let filename = `XRengine_Bot_screenshot${new Date().toJSON().slice(0, 10)}.path`
-    const filepath = storagePath + filename
-    console.warn('Trying to take a screenshot')
-    this.page.screenshot({ path: filepath })
+    console.warn(`Trying to screenshot and store at path ${filepath}/${filename}.png`)
+    await this.page.screenshot({ path: `${filepath}/${filename}.png` })
   }
   /**
    * Leaves the room and closes the browser instance without exiting node
