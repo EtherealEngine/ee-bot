@@ -1,12 +1,12 @@
 // === SETUP WEBXR === //
 import { Quaternion, Vector3 } from 'three'
 
-import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
-import { EngineActions } from '@xrengine/engine/src/ecs/classes/EngineState'
-import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
-import { EngineRenderer } from '@xrengine/engine/src/renderer/WebGLRendererSystem'
-import { XRAction, XRState } from '@xrengine/engine/src/xr/XRState'
-import { dispatchAction, getState } from '@xrengine/hyperflux'
+import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
+import { EngineActions } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
+import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
+import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
+import { dispatchAction, getState } from '@etherealengine/hyperflux'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 

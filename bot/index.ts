@@ -3,7 +3,7 @@ import * as puppeteer from 'puppeteer'
 import { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
-import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'

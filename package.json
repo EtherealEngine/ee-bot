@@ -3,7 +3,7 @@
   "version": "0.5.8",
   "repository": {
     "type": "git",
-    "url": "git://github.com/XRFoundation/XREngine.git"
+    "url": "git://github.cometherealengine/etherealengine.git"
   },
   "engines": {
     "node": ">= 16.3.0"

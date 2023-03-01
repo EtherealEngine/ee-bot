@@ -1,10 +1,10 @@
 import { MathUtils, Quaternion, Vector3 } from 'three'
 
-import { iterativeMapToObject } from '@xrengine/common/src/utils/mapToObject'
-import { Engine } from '@xrengine/engine/src/ecs/classes/Engine'
-import { getEngineState } from '@xrengine/engine/src/ecs/classes/EngineState'
-import { getComponent } from '@xrengine/engine/src/ecs/functions/ComponentFunctions'
-import { TransformComponent } from '@xrengine/engine/src/transform/components/TransformComponent'
+import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObject'
+import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
+import { getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
+import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 
 import { BotHooks, XRBotHooks } from '../enums/BotHooks'
 import {
