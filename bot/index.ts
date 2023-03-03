@@ -346,7 +346,7 @@ export class EtherealEngineBot {
     await this.page.setUserAgent(BotUserAgent)
 
     this.page.on('close', () => {
-      console.log('[XRENGINE BOT]: page closed')
+      console.log('[ETHEREAL BOT]: page closed')
       this.page = undefined!
     })
 
