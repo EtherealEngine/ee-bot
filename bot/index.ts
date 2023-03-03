@@ -3,13 +3,13 @@ import * as puppeteer from 'puppeteer'
 import { BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions } from 'puppeteer'
 import { URL } from 'url'
 
-import { BotUserAgent } from '@xrengine/common/src/constants/BotUserAgent'
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 
 class PageUtils {
-  bot: XREngineBot
+  bot: EtherealEngineBot
   constructor(bot) {
     this.bot = bot
   }
@@ -79,7 +79,7 @@ type BotProps = {
 /**
  * Main class for creating a bot.
  */
-export class XREngineBot {
+export class EtherealEngineBot {
   activeChannel
   headless: boolean
   ci: boolean
@@ -346,7 +346,7 @@ export class XREngineBot {
     await this.page.setUserAgent(BotUserAgent)
 
     this.page.on('close', () => {
-      console.log('[XRENGINE BOT]: page closed')
+      console.log('[ETHEREAL BOT]: page closed')
       this.page = undefined!
     })
 
