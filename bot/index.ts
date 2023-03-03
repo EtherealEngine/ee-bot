@@ -9,7 +9,7 @@ import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 
 class PageUtils {
-  bot: XREngineBot
+  bot: EtherealEngineBot
   constructor(bot) {
     this.bot = bot
   }
@@ -79,7 +79,7 @@ type BotProps = {
 /**
  * Main class for creating a bot.
  */
-export class XREngineBot {
+export class EtherealEngineBot {
   activeChannel
   headless: boolean
   ci: boolean

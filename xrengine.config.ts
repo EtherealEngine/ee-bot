@@ -2,7 +2,7 @@ import type { ProjectConfigInterface } from '@etherealengine/projects/ProjectCon
 
 const config: ProjectConfigInterface = {
   onEvent: undefined,
-  thumbnail: '/static/xrengine_thumbnail.jpg',
+  thumbnail: '/static/etherealengine_thumbnail.jpg',
   routes: {},
   worldInjection: () => import('./injectBotModule'),
   services: undefined,

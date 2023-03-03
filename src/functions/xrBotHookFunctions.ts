@@ -14,8 +14,8 @@ export async function overrideXR() {
   // inject the webxr polyfill from the webxr emulator source - this is a script added by the bot
   // globalThis.WebXRPolyfillInjection()
 
-  const { XREngineWebXRPolyfill } = await import('../../webxr-emulator/CustomWebXRPolyfill')
-  new XREngineWebXRPolyfill()
+  const { EtherealEngineWebXRPolyfill } = await import('../../webxr-emulator/CustomWebXRPolyfill')
+  new EtherealEngineWebXRPolyfill()
   // override session supported request, it hangs indefinitely for some reason
   ;(navigator as any).xr.isSessionSupported = () => {
     return true

@@ -19,7 +19,7 @@ import { WebXREventDispatcher } from './WebXREventDispatcher'
  * https://github.com/MozillaReality/WebXR-emulator-extension
  */
 
-export class XREngineWebXRPolyfill extends WebXRPolyfill {
+export class EtherealEngineWebXRPolyfill extends WebXRPolyfill {
   constructor() {
     super({ global: globalThis })
     this.global = this.global
