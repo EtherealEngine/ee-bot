@@ -1,9 +1,12 @@
 {
-  "name": "XREngine-Bot",
+  "name": "ee-bot",
   "version": "0.5.8",
   "repository": {
     "type": "git",
-    "url": "git://github.com/XRFoundation/XREngine.git"
+    "url": "git://github.com/etherealengine/etherealengine.git"
+  },
+  "etherealEngine": {
+    "version": "1.1.0"
   },
   "engines": {
     "node": ">= 16.3.0"

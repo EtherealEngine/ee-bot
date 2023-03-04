@@ -1,9 +1,9 @@
-import { XREngineBot } from '.'
+import { EtherealEngineBot } from '.'
 import { BotActionType } from './bot-action'
 
 export class BotManager {
   bots: {
-    [x: string]: XREngineBot
+    [x: string]: EtherealEngineBot
   }
   actions: any
   options: any
@@ -30,7 +30,7 @@ export class BotManager {
       return foundBot
     }
 
-    const bot = new XREngineBot({
+    const bot = new EtherealEngineBot({
       name,
       ...this.options
     })

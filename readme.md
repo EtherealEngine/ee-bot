@@ -2,11 +2,11 @@
 
 ```ts
 import { Vector3 } from 'three'
-import { XREngineBot } from 'XREngine-bot/src/bot'
-import { BotHooks } from 'XREngine-bot/src/bot/enums/BotHooks'
+import { EtherealEngineBot } from 'ee-bot/src/bot'
+import { BotHooks } from 'ee-bot/src/bot/enums/BotHooks'
 
 const maxTimeout = 10 * 1000
-const bot = new XREngineBot({ name: 'bot-1', headless: false, verbose: false })
+const bot = new EtherealEngineBot({ name: 'bot-1', headless: false, verbose: false })
 const vector3 = new Vector3()
 
 const domain = process.env.APP_HOST

@@ -4,7 +4,7 @@ import cli from "cli";
 const dotenv = require('dotenv-flow');
 const Sequelize = require('sequelize');
 import appRootPath from 'app-root-path'
-const { scopeTypeSeed } = require('@xrengine/server-core/src/scope/scope-type/scope-type.seed')
+const { scopeTypeSeed } = require('@etherealengine/server-core/src/scope/scope-type/scope-type.seed')
 
 dotenv.config({
     path: appRootPath.path,
@@ -13,7 +13,7 @@ dotenv.config({
 const db = {
     username: process.env.MYSQL_USER ?? 'server',
     password: process.env.MYSQL_PASSWORD ?? 'password',
-    database: process.env.MYSQL_DATABASE ?? 'xrengine',
+    database: process.env.MYSQL_DATABASE ?? 'etherealengine',
     host: process.env.MYSQL_HOST ?? '127.0.0.1',
     port: process.env.MYSQL_PORT ?? 3306,
     dialect: 'mysql'
