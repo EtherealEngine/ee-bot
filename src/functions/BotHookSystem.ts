@@ -1,5 +1,6 @@
 import { isDev } from '@etherealengine/common/src/config'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
+import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { getState } from '@etherealengine/hyperflux'
 
@@ -21,7 +22,7 @@ export default async function BotHookSystem() {
 
   const execute = () => {
     const xrSession = getState(XRState).session.value
-    if (Engine.instance.isBot && Boolean(xrSession)) {
+    if (getState(EngineState).isBot.value && Boolean(xrSession)) {
       sendXRInputData()
     }
   }

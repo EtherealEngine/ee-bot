@@ -2,7 +2,7 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObject'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { EngineState, getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 
@@ -20,6 +20,7 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
+import { getState } from '@etherealengine/hyperflux'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -75,7 +76,7 @@ export function serializeEngine() {
     store: Engine.instance.store,
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
-    isBot: Engine.instance.isBot,
+    isBot: getState(EngineState).isBot.value,
     // currentScene: Engine.instance.currentScene,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
