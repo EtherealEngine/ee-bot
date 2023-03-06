@@ -1,7 +1,5 @@
 import { isDev } from '@etherealengine/common/src/config'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { World } from '@etherealengine/engine/src/ecs/classes/World'
-import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { getState } from '@etherealengine/hyperflux'
 
