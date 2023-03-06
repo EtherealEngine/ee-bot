@@ -3,8 +3,8 @@ import { initSystems } from '@etherealengine/engine/src/ecs/functions/SystemFunc
 import { SystemUpdateType } from '@etherealengine/engine/src/ecs/functions/SystemUpdateType'
 import BotHookSystem from './src/functions/BotHookSystem'
 
-export default async function injectBotModule(world: World) {
-  await initSystems(world, [
+export default async function injectBotModule() {
+  await initSystems([
     {
       uuid: 'xre.bot.BotHookSystem',
       type: SystemUpdateType.FIXED,

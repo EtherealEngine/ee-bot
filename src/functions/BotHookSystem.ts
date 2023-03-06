@@ -10,7 +10,7 @@ import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
 
 const setupBotKey = 'xre.bot.setupBotKey'
 
-export default async function BotHookSystem(world: World) {
+export default async function BotHookSystem() {
   globalThis.botHooks = BotHookFunctions
 
   if (isDev) {

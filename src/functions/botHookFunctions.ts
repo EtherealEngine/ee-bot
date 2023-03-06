@@ -52,7 +52,7 @@ export function sceneLoaded() {
 }
 
 export function getPlayerPosition() {
-  return getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)?.position
+  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.position
 }
 
 /**
@@ -60,12 +60,12 @@ export function getPlayerPosition() {
  * @param {number} args.angle in degrees
  */
 export function rotatePlayer({ angle }) {
-  const transform = getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)
+  const transform = getComponent(Engine.instance.localClientEntity, TransformComponent)
   transform.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(angle)))
 }
 
 export function getPeers() {
-  return Array.from(Engine.instance.currentWorld.worldNetwork.peers)
+  return Array.from(Engine.instance.worldNetwork.peers)
 }
 
 export function serializeEngine() {
