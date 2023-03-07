@@ -81,7 +81,7 @@ export function serializeEngine() {
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
     xrFrame: Engine.instance.xrFrame,
-    isEditor: Engine.instance.isEditor
+    isEditor: getMutableState(EngineState).isEditor.value
   }
 
   console.log(JSON.stringify(iterativeMapToObject(engine)))
