@@ -2,7 +2,7 @@
 import { Quaternion, Vector3 } from 'three'
 
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { EngineActions } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { EngineActions, EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
@@ -278,6 +278,6 @@ export async function simulateXR() {
   // await loadScript(Engine.instance.publicPath + '/scripts/webxr-polyfill.js')
   await overrideXR()
   await xrSupported()
-  Engine.instance.isBot = true
+  getState(EngineState).isBot.set(true)
   await startXR()
 }

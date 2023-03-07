@@ -2,7 +2,7 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObject'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { EngineState, getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 
@@ -20,6 +20,7 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
+import { getState } from '@etherealengine/hyperflux'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -52,7 +53,7 @@ export function sceneLoaded() {
 }
 
 export function getPlayerPosition() {
-  return getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)?.position
+  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.position
 }
 
 /**
@@ -60,12 +61,12 @@ export function getPlayerPosition() {
  * @param {number} args.angle in degrees
  */
 export function rotatePlayer({ angle }) {
-  const transform = getComponent(Engine.instance.currentWorld.localClientEntity, TransformComponent)
+  const transform = getComponent(Engine.instance.localClientEntity, TransformComponent)
   transform.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(angle)))
 }
 
 export function getPeers() {
-  return Array.from(Engine.instance.currentWorld.worldNetwork.peers)
+  return Array.from(Engine.instance.worldNetwork.peers)
 }
 
 export function serializeEngine() {
@@ -75,8 +76,8 @@ export function serializeEngine() {
     store: Engine.instance.store,
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
-    isBot: Engine.instance.isBot,
-    // currentWorld: Engine.instance.currentWorld,
+    isBot: getState(EngineState).isBot.value,
+    // currentScene: Engine.instance.currentScene,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
     xrFrame: Engine.instance.xrFrame,
