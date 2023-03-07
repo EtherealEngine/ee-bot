@@ -275,7 +275,7 @@ export function updateController(args: { objectName: string; position: number[];
 }
 
 export async function simulateXR() {
-  // await loadScript(Engine.instance.publicPath + '/scripts/webxr-polyfill.js')
+  // await loadScript(getState(EngineState).publicPath + '/scripts/webxr-polyfill.js')
   await overrideXR()
   await xrSupported()
   getMutableState(EngineState).isBot.set(true)

@@ -20,7 +20,7 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getMutableState, getState } from '@etherealengine/hyperflux'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -45,11 +45,11 @@ export const BotHookFunctions = {
 // === ENGINE === //
 
 export function locationLoaded() {
-  return getEngineState().joinedWorld.value
+  return getState(EngineState).joinedWorld
 }
 
 export function sceneLoaded() {
-  return getEngineState().sceneLoaded.value
+  return getState(EngineState).sceneLoaded
 }
 
 export function getPlayerPosition() {
@@ -76,12 +76,12 @@ export function serializeEngine() {
     store: Engine.instance.store,
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
-    isBot: getMutableState(EngineState).isBot.value,
+    isBot: getState(EngineState).isBot,
     // currentScene: Engine.instance.currentScene,
     // worlds: Engine.instance.worlds,
-    publicPath: Engine.instance.publicPath,
+    publicPath: getState(EngineState).publicPath,
     xrFrame: Engine.instance.xrFrame,
-    isEditor: getMutableState(EngineState).isEditor.value
+    isEditor: getState(EngineState).isEditor
   }
 
   console.log(JSON.stringify(iterativeMapToObject(engine)))
