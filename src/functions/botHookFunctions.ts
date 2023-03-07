@@ -20,7 +20,7 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
-import { getState } from '@etherealengine/hyperflux'
+import { getMutableState } from '@etherealengine/hyperflux'
 
 export const BotHookFunctions = {
   [BotHooks.LocationLoaded]: locationLoaded,
@@ -76,7 +76,7 @@ export function serializeEngine() {
     store: Engine.instance.store,
     frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
-    isBot: getState(EngineState).isBot.value,
+    isBot: getMutableState(EngineState).isBot.value,
     // currentScene: Engine.instance.currentScene,
     // worlds: Engine.instance.worlds,
     publicPath: Engine.instance.publicPath,
