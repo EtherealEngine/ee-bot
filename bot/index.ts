@@ -1,3 +1,4 @@
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 import fs from 'fs'
 import * as path from 'path'
 import { P } from 'pino'
@@ -6,13 +7,12 @@ import * as puppeteer from 'puppeteer'
 import { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Page } from 'puppeteer'
 import { URL } from 'url'
 
-import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
-
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 
 class PageUtils {
   bot: EtherealEngineBot
+  uiCanvas: string
   constructor(bot) {
     this.bot = bot
     this.uiCanvas = 'body > div.MuiDialog-root.MuiModal-root > div.MuiDialog-container.MuiDialog-scrollPaper'
@@ -511,13 +511,13 @@ export class EtherealEngineBot {
 
   async openUserInfo() {
     console.log('opening user info')
-    let userInfoPath: any = '#engine-container > section > div > button.MuiButtonBase-root.MuiIconButton-root'
+    let userInfoPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(1)'
     await this.pageUtils.clickSelectorFirstMatch(userInfoPath) // bcz user info is the first button, again must fall back to nth of type for the others, ids prefered
     await this.delay(1000)
   }
 
-  async Opensettings(settingsType: string) {
-    let settingsButton: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > button'
+  async openSettings(settingsType: string) {
+    let settingsButton: any = "div[class*='profileContainer'] > button"
     let settingsHeaderPath: any = "[id^=':r'] > div > div > div"
     console.log('opening settings')
     await this.page.waitForSelector(settingsButton)
@@ -543,6 +543,12 @@ export class EtherealEngineBot {
     console.log('button ' + button)
     await button.click()
     await this.delay(1000)
+  }
+
+  async openAvatarSettings() {
+    let avatarSettingsButton: any = "div[class*='profileContainer'] > div[class*='avatar'] > button"
+    await this.page.waitForSelector(avatarSettingsButton)
+    await this.pageUtils.clickSelectorFirstMatch(avatarSettingsButton)
   }
 
   async closeInterface() {
@@ -600,14 +606,12 @@ export class EtherealEngineBot {
   async changeTheme(uiType: string, theme: string) {
     // uses lowercase string for now, will change to engine enums later
     // add ids for everything else later
-    let uiTypeContainer: any = this.pageUtils.uiCanvas + '> div > div > div > div'
+    let uiTypeContainer: any = "div[class*='menuContent'] > div"
     let uiTypeId: any = '#mui-component-select-' + uiType
-    let themeContainer: any =
-      `#menu-${uiType}` +
-      '> div.MuiPaper-root.MuiPaper-rounded.MuiPaper-root.MuiMenu-paper.MuiPaper-rounded.MuiPopover-paper > ul'
+    let themeContainer: any = `#menu-${uiType}` + '> div > ul'
 
     await this.openUserInfo()
-    await this.Opensettings('General')
+    await this.openSettings('General')
 
     console.log('changing theme')
     await this.delay(1000)
@@ -624,11 +628,9 @@ export class EtherealEngineBot {
   }
 
   async setSpatialAudioVideo(value: boolean) {
-    let checkbox: any =
-      this.pageUtils.uiCanvas +
-      "> div > div > div > div > span.MuiButtonBase-root.MuiCheckbox-root > input[type='checkbox']"
+    let checkbox: any = "div[class*='menuContent'] > div > span > input[type='checkbox']"
     await this.openUserInfo()
-    await this.Opensettings('Audio')
+    await this.openSettings('Audio')
     await this.delay(1000)
     await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
@@ -648,75 +650,88 @@ export class EtherealEngineBot {
     const audiotypes = []
 
     let slider: any =
-      this.pageUtils.uiCanvas +
-      '> div > div > div > ' +
-      `div.MuiBox-root:nth-of-type(${audiotypemap[audioType.toLowerCase()]})` +
-      '> span'
+      "div[class*='menuContent']" + `> div.MuiBox-root:nth-of-type(${audiotypemap[audioType.toLowerCase()]}) > span`
     await this.openUserInfo()
-    await this.Opensettings('Audio')
+    await this.openSettings('Audio')
     await this.delay(1000)
     await this.simulateSlider(slider, value)
     await this.closeInterface()
   }
 
   async changeResolution(value: number) {
-    let slider: any = this.pageUtils.uiCanvas + '> div > div > div > div.MuiBox-root > span'
+    let slider: any = "div[class*='menuContent'] > div > span"
     await this.openUserInfo()
-    await this.Opensettings('Graphics')
+    await this.openSettings('Graphics')
     await this.delay(1000)
     await this.simulateSlider(slider, value)
     await this.closeInterface()
   }
 
   // might be able to combine these functions worth checking later
-  async setAutomatic(value: boolean) {
-    let checkbox: any =
-      this.pageUtils.uiCanvas +
-      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(3) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
-
-    await this.openUserInfo()
-    await this.Opensettings('Graphics')
-    await this.delay(1000)
-    await this.simulateCheckbox(checkbox, value)
-    await this.closeInterface()
-  }
 
   async setPostProcessing(value: boolean) {
-    let checkbox: any =
-      this.pageUtils.uiCanvas +
-      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(1) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
+    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(1) > label > span > input[type='checkbox']"
 
     await this.openUserInfo()
-    await this.Opensettings('Graphics')
+    await this.openSettings('Graphics')
     await this.delay(1000)
     await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
   }
 
   async setShadows(value: boolean) {
-    let checkbox: any =
-      this.pageUtils.uiCanvas +
-      "> div > div > div > div.MuiGrid-root.MuiGrid-container > div.MuiGrid-root.MuiGrid-item:nth-of-type(2) > label > span.MuiButtonBase-root.MuiCheckbox-root.PrivateSwitchBase-root.MuiCheckbox-root > input[type='checkbox']"
+    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(2) > label > span > input[type='checkbox']"
 
     await this.openUserInfo()
-    await this.Opensettings('Graphics')
+    await this.openSettings('Graphics')
     await this.delay(1000)
     await this.simulateCheckbox(checkbox, value)
     await this.closeInterface()
   }
 
+  async setAutomatic(value: boolean) {
+    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(3) > label > span > input[type='checkbox']"
+
+    await this.openUserInfo()
+    await this.openSettings('Graphics')
+    await this.delay(1000)
+    await this.simulateCheckbox(checkbox, value)
+    await this.closeInterface()
+  }
+  // this is an idempotent funciton assuming avatas have unique names
+  async selectAvatar(name: string) {
+    let avatarSelector = `div[title = '${name}']`
+    let confirmButton = `button[title = 'Confirm']`
+    await this.openUserInfo()
+    await this.openAvatarSettings()
+    await this.page.waitForSelector(avatarSelector)
+    await this.pageUtils.clickSelectorFirstMatch(avatarSelector)
+    await this.pageUtils.clickSelectorFirstMatch(confirmButton)
+    await this.delay(10000)
+  }
+  //returns a list of avatar names found from the query , can be upgraded to json object later
+  async searchAvatar(query: string): Promise<string[]> {
+    let avatarSearchbox = "input[placeholder*='Avatar'][type = 'text']"
+    await this.openUserInfo()
+    await this.openAvatarSettings()
+    const inputbox = await this.page.waitForSelector(avatarSearchbox)
+    await inputbox!.type(query);
+    await this.delay(5000)//wait for the actual query to filter things out
+    // extract the values of the "title" (avatar names) attributes into an array
+    const avatarlist: string[] = (await this.page.$$eval('div[title]', (avatarElements) =>
+      avatarElements.map((avatar) => avatar.getAttribute('title') as string)
+    )) as string[]
+    return avatarlist
+  }
+
   async animateCharacter(animation) {
-    let animWheelButtonPath: any =
-      '#engine-container > section > div > button.MuiButtonBase-root.MuiIconButton-root:nth-of-type(3)'
+    let animWheelButtonPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(3)'
     await this.pageUtils.clickSelectorFirstMatch(animWheelButtonPath)
     await this.delay(3000)
-    let animWheelPath: any = "#engine-container > div > section[class*='emoteMenu'] > div[class*='itemContainer']"
-    let animWheelRightPath: any = animWheelPath + "> div > button > svg[data-testid*='Next']"
+    let animWheelPath: any = "div[class*='itemContainer']"
+    let animWheelRightPath: any = "svg[data-testid*='Next']"
     const animWheelRightButton = await this.pageUtils.getParentElement(await this.page.$(animWheelRightPath))
-    let animWheelLeftPath: any = animWheelPath + "> div > button > svg[data-testid*='Before']"
-    const animWheelLeftButton = await this.pageUtils.getParentElement(await this.page.$(animWheelLeftPath))
-    let animWheelTargetAnimPath: any =
-      animWheelPath + `> div[class*=menuItemBlock] > div > button > img[alt*='${animation}' i]`
+    let animWheelTargetAnimPath: any = `img[alt*='${animation}' i]`
     var isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
     while (!isDisabled) {
       var animImage = await this.page.$$(animWheelTargetAnimPath)

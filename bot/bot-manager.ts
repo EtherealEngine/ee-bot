@@ -139,6 +139,16 @@ export class BotManager {
         case BotActionType.CloseInterface:
           await bot.closeInterface()
           break
+        case BotActionType.ChangeUserAvatar.SearchAvatar:
+          await bot.searchAvatar(action.data.query)
+          break
+        case BotActionType.ChangeUserAvatar.SelectAvatar:
+          await bot.selectAvatar(action.data.name)
+          break
+        case BotActionType.ChangeUserAvatar.CreateCustomAvatar:
+          break
+        case BotActionType.ChangeUserAvatar.CreateReadyPlayerMeAvatar:
+          break
         case BotActionType.AnimateCharacter:
           await bot.animateCharacter(action.data.animation)
           break

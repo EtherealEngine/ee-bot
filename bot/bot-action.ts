@@ -228,9 +228,9 @@ export class BotAction {
     return new BotAction(BotActionType.ChangeUserAvatar.SearchAvatar, { query })
   }
 
-  static selectAvatar(avatarList) {
-    // lis tof avatars from UI
-    return new BotAction(BotActionType.ChangeUserAvatar.SelectAvatar, { avatarList })
+  static selectAvatar(name: string) {
+    // select avatar from list in the UI, used with search
+    return new BotAction(BotActionType.ChangeUserAvatar.SelectAvatar, { name })
   }
 
   static createReadyPlayerMeAvatar() {
