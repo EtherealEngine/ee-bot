@@ -25,9 +25,8 @@
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
-    "puppeteer": "19.2.0",
-    "puppeteer-select": "^1.0.3",
-    "webxr-emulator": "git+https://github.com/XRFoundation/WebXR-emulator-extension.git"
+    "puppeteer": "^19.6.3",
+    "webxr-emulator": "git+https://github.com/etherealengine/WebXR-emulator-extension.git"
   },
   "license": "ISC",
   "devDependencies": {

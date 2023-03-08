@@ -1,12 +1,11 @@
 // === SETUP WEBXR === //
 
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { EngineActions } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { EngineActions, EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
-import { dispatchAction, getState } from '@etherealengine/hyperflux'
-import { Quaternion, Vector3 } from 'three'
+import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
@@ -65,7 +64,7 @@ export async function xrSupported() {
 }
 
 export function xrInitialized() {
-  const xrSession = getState(XRState).session.value
+  const xrSession = getMutableState(XRState).session.value
   return Boolean(xrSession)
 }
 
@@ -275,9 +274,9 @@ export function updateController(args: { objectName: string; position: number[];
 }
 
 export async function simulateXR() {
-  // await loadScript(Engine.instance.publicPath + '/scripts/webxr-polyfill.js')
+  // await loadScript(getState(EngineState).publicPath + '/scripts/webxr-polyfill.js')
   await overrideXR()
   await xrSupported()
-  Engine.instance.isBot = true
+  getMutableState(EngineState).isBot.set(true)
   await startXR()
 }

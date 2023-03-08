@@ -1,16 +1,15 @@
 import { isDev } from '@etherealengine/common/src/config'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { World } from '@etherealengine/engine/src/ecs/classes/World'
-import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
+import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
-import { getState } from '@etherealengine/hyperflux'
+import { getMutableState } from '@etherealengine/hyperflux'
 
 import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
 
 const setupBotKey = 'xre.bot.setupBotKey'
 
-export default async function BotHookSystem(world: World) {
+export default async function BotHookSystem() {
   globalThis.botHooks = BotHookFunctions
 
   if (isDev) {
@@ -22,8 +21,8 @@ export default async function BotHookSystem(world: World) {
   }
 
   const execute = () => {
-    const xrSession = getState(XRState).session.value
-    if (Engine.instance.isBot && Boolean(xrSession)) {
+    const xrSession = getMutableState(XRState).session.value
+    if (getMutableState(EngineState).isBot.value && Boolean(xrSession)) {
       sendXRInputData()
     }
   }
