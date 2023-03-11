@@ -114,6 +114,47 @@ export class BotManager {
         case BotActionType.Delay:
           await bot.delay(action.data.timeout)
           break
+        //settings
+        case BotActionType.ChangeUserSettings.General.ChangeTheme:
+          await bot.changeTheme(action.data.uiType, action.data.theme)
+          break
+        case BotActionType.ChangeUserSettings.Audio.SetSpatialAudioVideo:
+          await bot.setSpatialAudioVideo(action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Audio.ChangeVolume:
+          await bot.changeVolume(action.data.audioType, action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Graphics.ChangeResolution:
+          await bot.changeResolution(action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetAutomatic:
+          await bot.setAutomatic(action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetPostProcessing:
+          await bot.setPostProcessing(action.data.value)
+          break
+        case BotActionType.ChangeUserSettings.Graphics.SetShadows:
+          await bot.setShadows(action.data.value)
+          break
+        case BotActionType.CloseInterface:
+          await bot.closeInterface()
+          break
+        case BotActionType.ChangeUserAvatar.SearchAvatar:
+          await bot.searchAvatar(action.data.query)
+          break
+        case BotActionType.ChangeUserAvatar.SelectAvatar:
+          await bot.selectAvatar(action.data.name)
+          break
+        case BotActionType.ChangeUserAvatar.CreateCustomAvatar:
+          break
+        case BotActionType.ChangeUserAvatar.CreateReadyPlayerMeAvatar:
+          break
+        case BotActionType.AnimateCharacter:
+          await bot.animateCharacter(action.data.animation)
+          break
+        case BotActionType.TakeScreenshot:
+          await bot.takeScreenshot(action.data.storagePath)
+          break
         default:
           console.error('Unknown bot action')
           break

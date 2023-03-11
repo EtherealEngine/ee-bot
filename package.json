@@ -19,12 +19,17 @@
   "scripts": {
     "check-errors": "tsc --noemit",
     "build-publish": "rimraf dist && cti entrypoint ./src -o index.ts && cross-env APP_ENV=production rollup -c",
-    "validate": "npm run test"
+    "validate": "npm run test",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "precommit": "no-master-commits -b master"
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
     "puppeteer": "^19.6.3",
     "webxr-emulator": "git+https://github.com/etherealengine/WebXR-emulator-extension.git"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/expect-puppeteer": "^5.0.3"
+  }
 }

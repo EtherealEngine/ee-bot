@@ -1,5 +1,4 @@
 // === SETUP WEBXR === //
-import { Quaternion, Vector3 } from 'three'
 
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
 import { EngineActions, EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
