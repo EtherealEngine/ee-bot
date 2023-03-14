@@ -1,11 +1,9 @@
 // === SETUP WEBXR === //
 
-import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
-import { EngineActions, EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
-import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
-import { EngineRenderer } from '@etherealengine/engine/src/renderer/WebGLRendererSystem'
+import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
 import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
+import { Quaternion, Vector3 } from 'three'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
