@@ -115,6 +115,9 @@ export class BotManager {
           await bot.delay(action.data.timeout)
           break
         //settings
+        case BotActionType.ChangeUserSettings.UpdateUsername:
+          await bot.updateUsername(action.data.name)
+          break
         case BotActionType.ChangeUserSettings.General.ChangeTheme:
           await bot.changeTheme(action.data.uiType, action.data.theme)
           break

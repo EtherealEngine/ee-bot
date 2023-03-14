@@ -1,4 +1,3 @@
-import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 import fs from 'fs'
 import * as path from 'path'
 import { P } from 'pino'
@@ -7,75 +6,11 @@ import * as puppeteer from 'puppeteer'
 import { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Page } from 'puppeteer'
 import { URL } from 'url'
 
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
+
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
-
-class PageUtils {
-  bot: EtherealEngineBot
-  uiCanvas: string
-  constructor(bot) {
-    this.bot = bot
-    this.uiCanvas = 'body > div.MuiDialog-root.MuiModal-root > div.MuiDialog-container.MuiDialog-scrollPaper'
-  }
-  async clickSelectorClassRegex(selector, classRegex) {
-    if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${classRegex}`)
-
-    await this.bot.page.evaluate(
-      (selector, classRegex) => {
-        classRegex = new RegExp(classRegex)
-        const buttons = Array.from(document.querySelectorAll(selector))
-        const enterButton = buttons.find((button) => Array.from(button.classList).some((c) => classRegex.test(c)))
-        if (enterButton) enterButton.click()
-      },
-      selector,
-      classRegex.toString().slice(1, -1)
-    )
-  }
-  async clickSelectorId<K extends keyof HTMLElementTagNameMap>(selector: K, id: string) {
-    if (this.bot.verbose) console.log(`Clicking for a ${selector} matching ${id}`)
-
-    await this.bot.page.waitForFunction(`document.getElementById('${id}')`)
-
-    await this.bot.page.evaluate(
-      (selector: any, id: string) => {
-        const matches = Array.from(document.querySelectorAll(selector))
-
-        const singleMatch = matches.find((button) => button.id === id)
-        let result
-        if (singleMatch && singleMatch.click) {
-          console.log('normal click')
-          result = singleMatch.click()
-        }
-        if (singleMatch && !singleMatch.click) {
-          console.log('on click')
-          result = singleMatch.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-        }
-        if (!singleMatch) {
-          console.log('event click', matches.length)
-          const m = matches[0]
-          result = m.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-        }
-      },
-      selector,
-      id
-    )
-  }
-  async clickSelectorFirstMatch(selector) {
-    if (this.bot.verbose) console.log(`Clicking for first ${selector}`)
-
-    await this.bot.page.evaluate((selector) => {
-      const matches = Array.from(document.querySelectorAll(selector))
-      const singleMatch = matches[0]
-      if (singleMatch) singleMatch.click()
-    }, selector)
-  }
-  async getParentElement(elementHandle) {
-    const parentElementHandle: any = await this.bot.page.evaluateHandle((element) => {
-      return element.parentElement
-    }, elementHandle)
-    return parentElementHandle.asElement()
-  }
-}
+import { PageUtils } from './utils/pageUtils'
 
 type BotProps = {
   verbose?: boolean
@@ -334,6 +269,7 @@ export class EtherealEngineBot {
       ignoreDefaultArgs: ['--mute-audio'],
       args: [
         this.headless ? '--headless' : '--enable-webgl',
+        '--disable-gpu',
         '--enable-features=NetworkService',
         '--ignore-certificate-errors',
         `--no-sandbox`,
@@ -425,6 +361,9 @@ export class EtherealEngineBot {
     // }, 2000) });
   }
 
+  getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
   /** Enters the room specified, enabling the first microphone and speaker found
    * @param {string} roomUrl The url of the room to join
    * @param {Object} opts
@@ -437,13 +376,6 @@ export class EtherealEngineBot {
     await this.page.mouse.click(0, 0)
     await this.setFocus('canvas')
     await this.pageUtils.clickSelectorId('canvas', 'engine-renderer-canvas')
-    // await new Promise(resolve => {setTimeout(async() => {
-    //     // await this.pu.clickSelectorClassRegex("button", /join_world/);
-    //     setTimeout(async() => {
-    //         // await this.page.waitForSelector('button.openChat');
-    //         resolve();
-    //     }, 30000)
-    // }, 2000) });
   }
 
   /** Enters the editor scene specified
@@ -518,7 +450,7 @@ export class EtherealEngineBot {
 
   async openSettings(settingsType: string) {
     let settingsButton: any = "div[class*='profileContainer'] > button"
-    let settingsHeaderPath: any = "[id^=':r'] > div > div > div"
+    let settingsHeaderPath: any = "[id^=':r']> span > div > div > div"
     console.log('opening settings')
     await this.page.waitForSelector(settingsButton)
     await this.pageUtils.clickSelectorFirstMatch(settingsButton)
@@ -578,6 +510,17 @@ export class EtherealEngineBot {
     await this.page.mouse.down()
     await this.page.mouse.up()
     await this.delay(200)
+  }
+
+  async updateUsername(name: string) {
+    let usernameInputBox = "input[placeholder*='username' i][name = 'username'][type = 'text']"
+    await this.openUserInfo()
+    const inputbox = await this.page.waitForSelector(usernameInputBox)
+    await inputbox!.click({ clickCount: 3 }) // Select all the text
+    await inputbox!.press('Backspace')
+    await inputbox!.type(name)
+    await this.pressKey('Enter')
+    await this.closeInterface()
   }
 
   async simulateCheckbox(selector: string, value: boolean) {
@@ -715,8 +658,8 @@ export class EtherealEngineBot {
     await this.openUserInfo()
     await this.openAvatarSettings()
     const inputbox = await this.page.waitForSelector(avatarSearchbox)
-    await inputbox!.type(query);
-    await this.delay(5000)//wait for the actual query to filter things out
+    await inputbox!.type(query)
+    await this.delay(5000) //wait for the actual query to filter things out
     // extract the values of the "title" (avatar names) attributes into an array
     const avatarlist: string[] = (await this.page.$$eval('div[title]', (avatarElements) =>
       avatarElements.map((avatar) => avatar.getAttribute('title') as string)
