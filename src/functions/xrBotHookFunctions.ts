@@ -1,9 +1,10 @@
 // === SETUP WEBXR === //
 
+import { Quaternion, Vector3 } from 'three'
+
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
 import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
-import { Quaternion, Vector3 } from 'three'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 

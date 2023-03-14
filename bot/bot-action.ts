@@ -182,7 +182,7 @@ export class BotAction {
     return new BotAction(BotActionType.Delay, { timeout })
   }
   // we can move them to thier own set of actions later if needed
-  static updateUsername(name : number){
+  static updateUsername(name: number) {
     return new BotAction(BotActionType.ChangeUserSettings.UpdateUsername, { name })
   }
   //General
