@@ -23,6 +23,7 @@ import {
 } from './xrBotHookFunctions'
 
 export const BotHookFunctions = {
+  [BotHooks.IsBot]:isBot,
   [BotHooks.LocationLoaded]: locationLoaded,
   [BotHooks.SceneLoaded]: sceneLoaded,
   [BotHooks.GetPlayerPosition]: getPlayerPosition,
@@ -47,6 +48,10 @@ export const BotHookFunctions = {
 }
 
 // === ENGINE === //
+
+export function isBot(){
+  return getState(EngineState).isBot
+}
 
 export function locationLoaded() {
   return getState(EngineState).joinedWorld

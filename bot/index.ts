@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import fs from 'fs'
 import * as path from 'path'
 import { P } from 'pino'
@@ -13,9 +14,9 @@ import { makeAdmin } from './utils/make-user-admin'
 import { PageUtils } from './utils/pageUtils'
 
 type BotProps = {
-  verbose?: boolean
-  headless?: boolean
-  gpu?: boolean
+  verbose?: Boolean
+  headless?: Boolean
+  gpu?: Boolean
   name?: string
   fakeMediaPath?: string
   windowSize?: { width: number; height: number }
@@ -26,9 +27,9 @@ type BotProps = {
  */
 export class EtherealEngineBot {
   activeChannel
-  headless: boolean
-  ci: boolean
-  verbose: boolean
+  headless: Boolean
+  ci: Boolean
+  verbose: Boolean
   name: string
   fakeMediaPath: string
   windowSize: {
@@ -269,7 +270,8 @@ export class EtherealEngineBot {
       ignoreDefaultArgs: ['--mute-audio'],
       args: [
         this.headless ? '--headless' : '--enable-webgl',
-        '--disable-gpu',
+        this.headless ? '--disable-gpu': undefined,
+        //this.headless ? '--disable-3d-apis':undefined,
         '--enable-features=NetworkService',
         '--ignore-certificate-errors',
         `--no-sandbox`,
@@ -282,7 +284,7 @@ export class EtherealEngineBot {
         //'--no-first-run',
         '--allow-file-access=1',
         '--mute-audio'
-      ],
+      ].filter(Boolean),
       ...this.detectOsOption()
     } as LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
 
@@ -443,14 +445,14 @@ export class EtherealEngineBot {
 
   async openUserInfo() {
     console.log('opening user info')
-    let userInfoPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(1)'
+    const userInfoPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(1)'
     await this.pageUtils.clickSelectorFirstMatch(userInfoPath) // bcz user info is the first button, again must fall back to nth of type for the others, ids prefered
     await this.delay(1000)
   }
 
   async openSettings(settingsType: string) {
-    let settingsButton: any = "div[class*='profileContainer'] > button"
-    let settingsHeaderPath: any = "[id^=':r']> span > div > div > div"
+    const settingsButton: any = "div[class*='profileContainer'] > button"
+    const settingsHeaderPath: any = "[id^=':r']> span > div > div > div"
     console.log('opening settings')
     await this.page.waitForSelector(settingsButton)
     await this.pageUtils.clickSelectorFirstMatch(settingsButton)
@@ -458,7 +460,7 @@ export class EtherealEngineBot {
     await this.delay(1000)
     console.log('selectors ' + settingsContainer)
     // sadly hardcoded tried to scrape the text within button using xpath and eval but all return null
-    var button
+    let button
     switch (settingsType.toLowerCase()) {
       case 'general':
         button = await settingsContainer?.$('button:nth-child(1)')
@@ -478,7 +480,7 @@ export class EtherealEngineBot {
   }
 
   async openAvatarSettings() {
-    let avatarSettingsButton: any = "div[class*='profileContainer'] > div[class*='avatar'] > button"
+    const avatarSettingsButton: any = "div[class*='profileContainer'] > div[class*='avatar'] > button"
     await this.page.waitForSelector(avatarSettingsButton)
     await this.pageUtils.clickSelectorFirstMatch(avatarSettingsButton)
   }
@@ -493,7 +495,7 @@ export class EtherealEngineBot {
 
   async simulateSlider(selector: string, value: number) {
     console.log('slider path is ' + selector)
-    var sliderElement: any = await this.page.$(selector)
+    const sliderElement: any = await this.page.$(selector)
     const sliderBoundingBox = await sliderElement.boundingBox()
     const sliderHandle = await sliderElement!.evaluateHandle((el) => {
       const sliderHandle = el.querySelector('.MuiSlider-thumb') as HTMLElement
@@ -513,7 +515,7 @@ export class EtherealEngineBot {
   }
 
   async updateUsername(name: string) {
-    let usernameInputBox = "input[placeholder*='username' i][name = 'username'][type = 'text']"
+    const usernameInputBox = "input[placeholder*='username' i][name = 'username'][type = 'text']"
     await this.openUserInfo()
     const inputbox = await this.page.waitForSelector(usernameInputBox)
     await inputbox!.click({ clickCount: 3 }) // Select all the text
@@ -523,7 +525,7 @@ export class EtherealEngineBot {
     await this.closeInterface()
   }
 
-  async simulateCheckbox(selector: string, value: boolean) {
+  async simulateCheckbox(selector: string, value: Boolean) {
     console.log('check box path is ' + selector)
     const checkbox: any = await this.page.$(selector)
     console.log('check box is ' + checkbox)
@@ -538,7 +540,7 @@ export class EtherealEngineBot {
     if (isDisabled) {
       return
     }
-    const isChecked: boolean = await checkbox.evaluate((element: HTMLInputElement) => element.checked)
+    const isChecked: Boolean = await checkbox.evaluate((element: HTMLInputElement) => element.checked)
     if (isChecked == value) {
       return
     }
@@ -549,9 +551,9 @@ export class EtherealEngineBot {
   async changeTheme(uiType: string, theme: string) {
     // uses lowercase string for now, will change to engine enums later
     // add ids for everything else later
-    let uiTypeContainer: any = "div[class*='menuContent'] > div"
-    let uiTypeId: any = '#mui-component-select-' + uiType
-    let themeContainer: any = `#menu-${uiType}` + '> div > ul'
+    const uiTypeContainer: any = "div[class*='menuContent'] > div"
+    const uiTypeId: any = '#mui-component-select-' + uiType
+    const themeContainer: any = `#menu-${uiType}` + '> div > ul'
 
     await this.openUserInfo()
     await this.openSettings('General')
@@ -570,8 +572,8 @@ export class EtherealEngineBot {
     await this.closeInterface()
   }
 
-  async setSpatialAudioVideo(value: boolean) {
-    let checkbox: any = "div[class*='menuContent'] > div > span > input[type='checkbox']"
+  async setSpatialAudioVideo(value: Boolean) {
+    const checkbox: any = "div[class*='menuContent'] > div > span > input[type='checkbox']"
     await this.openUserInfo()
     await this.openSettings('Audio')
     await this.delay(1000)
@@ -592,7 +594,7 @@ export class EtherealEngineBot {
     }
     const audiotypes = []
 
-    let slider: any =
+    const slider: any =
       "div[class*='menuContent']" + `> div.MuiBox-root:nth-of-type(${audiotypemap[audioType.toLowerCase()]}) > span`
     await this.openUserInfo()
     await this.openSettings('Audio')
@@ -602,7 +604,7 @@ export class EtherealEngineBot {
   }
 
   async changeResolution(value: number) {
-    let slider: any = "div[class*='menuContent'] > div > span"
+    const slider: any = "div[class*='menuContent'] > div > span"
     await this.openUserInfo()
     await this.openSettings('Graphics')
     await this.delay(1000)
@@ -612,8 +614,8 @@ export class EtherealEngineBot {
 
   // might be able to combine these functions worth checking later
 
-  async setPostProcessing(value: boolean) {
-    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(1) > label > span > input[type='checkbox']"
+  async setPostProcessing(value: Boolean) {
+    const checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(1) > label > span > input[type='checkbox']"
 
     await this.openUserInfo()
     await this.openSettings('Graphics')
@@ -622,8 +624,8 @@ export class EtherealEngineBot {
     await this.closeInterface()
   }
 
-  async setShadows(value: boolean) {
-    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(2) > label > span > input[type='checkbox']"
+  async setShadows(value: Boolean) {
+    const checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(2) > label > span > input[type='checkbox']"
 
     await this.openUserInfo()
     await this.openSettings('Graphics')
@@ -632,8 +634,8 @@ export class EtherealEngineBot {
     await this.closeInterface()
   }
 
-  async setAutomatic(value: boolean) {
-    let checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(3) > label > span > input[type='checkbox']"
+  async setAutomatic(value: Boolean) {
+    const checkbox: any = "div[class*='menuContent'] > div > div:nth-of-type(3) > label > span > input[type='checkbox']"
 
     await this.openUserInfo()
     await this.openSettings('Graphics')
@@ -643,8 +645,8 @@ export class EtherealEngineBot {
   }
   // this is an idempotent funciton assuming avatas have unique names
   async selectAvatar(name: string) {
-    let avatarSelector = `div[title = '${name}']`
-    let confirmButton = `button[title = 'Confirm']`
+    const avatarSelector = `div[title = '${name}']`
+    const confirmButton = `button[title = 'Confirm']`
     await this.openUserInfo()
     await this.openAvatarSettings()
     await this.page.waitForSelector(avatarSelector)
@@ -654,7 +656,7 @@ export class EtherealEngineBot {
   }
   //returns a list of avatar names found from the query , can be upgraded to json object later
   async searchAvatar(query: string): Promise<string[]> {
-    let avatarSearchbox = "input[placeholder*='Avatar'][type = 'text']"
+    const avatarSearchbox = "input[placeholder*='Avatar'][type = 'text']"
     await this.openUserInfo()
     await this.openAvatarSettings()
     const inputbox = await this.page.waitForSelector(avatarSearchbox)
@@ -668,16 +670,16 @@ export class EtherealEngineBot {
   }
 
   async animateCharacter(animation) {
-    let animWheelButtonPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(3)'
+    const animWheelButtonPath: any = 'div[class*="buttonsContainer"] > button.MuiIconButton-root:nth-of-type(3)'
     await this.pageUtils.clickSelectorFirstMatch(animWheelButtonPath)
     await this.delay(3000)
-    let animWheelPath: any = "div[class*='itemContainer']"
-    let animWheelRightPath: any = "svg[data-testid*='Next']"
+    const animWheelPath: any = "div[class*='itemContainer']"
+    const animWheelRightPath: any = "svg[data-testid*='Next']"
     const animWheelRightButton = await this.pageUtils.getParentElement(await this.page.$(animWheelRightPath))
-    let animWheelTargetAnimPath: any = `img[alt*='${animation}' i]`
-    var isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
+    const animWheelTargetAnimPath: any = `img[alt*='${animation}' i]`
+    let isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
     while (!isDisabled) {
-      var animImage = await this.page.$$(animWheelTargetAnimPath)
+      const animImage = await this.page.$$(animWheelTargetAnimPath)
       if ((await animImage).length === 0) {
         await animWheelRightButton.click()
         isDisabled = await animWheelRightButton.evaluate((element: HTMLInputElement) => element.disabled)
@@ -688,7 +690,7 @@ export class EtherealEngineBot {
         await this.delay(1000)
         continue
       }
-      var animButton = await this.pageUtils.getParentElement(animImage[0])
+      const animButton = await this.pageUtils.getParentElement(animImage[0])
       await animButton.click()
       break
     }
