@@ -35,6 +35,5 @@
   "include": [
     "../../../server-core/src/*",
     "./**/*.ts",
-    "./**/*.tsx"
-, "../../../server-core/src/bot/bot/bot-helper.ts"  ]
+    "./**/*.tsx"]
 }
