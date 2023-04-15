@@ -1,5 +1,4 @@
 import { isDev } from '@etherealengine/common/src/config'
-import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { getMutableState } from '@etherealengine/hyperflux'

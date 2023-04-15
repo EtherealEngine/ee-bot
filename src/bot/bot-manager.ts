@@ -1,5 +1,5 @@
-import { EtherealEngineBot } from '.'
-import { BotActionType } from './bot-action'
+import { EtherealEngineBot } from './bot-class'
+import { BotAction, BotActionType } from './bot-action'
 
 export class BotManager {
   bots: {
@@ -20,11 +20,11 @@ export class BotManager {
     this.options = options
   }
 
-  findBotById(id) {
+  findBotById(id:string) {
     return this.bots[id]
   }
 
-  addBot(id,name) {
+  addBot(id:string,name:string) {
     const foundBot = this.findBotById(id)
     if (foundBot) {
       return foundBot
@@ -40,14 +40,29 @@ export class BotManager {
     return bot
   }
 
-  addAction(botId, action) {
+  removeBot(id:string){
+    const foundBot = this.findBotById(id)
+    if(!foundBot){
+      return null
+    }
+    foundBot.quit()
+    delete this.bots[id]
+    return foundBot
+  }
+
+  getActions(){
+    return this.actions
+  }
+  
+  addAction(botId:string, action:BotAction) {
     this.actions.push({ botId, action })
   }
 
   async run() {
-    console.log(this.bots)
+    console.log("bots : ",this.bots)
+
     for (const botAction of this.actions) {
-      const { botId, action } = botAction
+      const { botId, action }:{botId:string,action} = botAction
       const bot = this.findBotById(botId)
 
       if (!bot) {
@@ -175,3 +190,5 @@ export class BotManager {
     this.bots = {}
   }
 }
+
+

@@ -44,7 +44,6 @@ export class EtherealEngineBot {
     this.verbose = args.verbose!
     this.headless = args.headless ?? true
     this.ci = typeof process.env.CI === 'string' && process.env.CI === 'true'
-    console.log('headless', this.headless)
     this.name = args.name ?? 'Bot'
     this.fakeMediaPath = args.fakeMediaPath ?? ''
     this.windowSize = args.windowSize ?? { width: 640, height: 480 }
