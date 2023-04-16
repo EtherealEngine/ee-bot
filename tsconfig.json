@@ -25,16 +25,14 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
-    "outDir": "./lib",
-    "types": ["vite/client", "mocha"]
+    "outDir": "./dist",
+    "types": ["vite/client","mocha"]
   },
   "exclude": [
     "../projects/projects/**",
     "**/node_modules/**"
   ],
   "include": [
-    "../../../server-core/src/*",
     "./**/*.ts",
-    "./**/*.tsx"
-  ]
+    "./**/*.tsx"]
 }

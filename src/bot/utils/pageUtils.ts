@@ -1,4 +1,4 @@
-import { EtherealEngineBot } from '..'
+import { EtherealEngineBot } from '../bot-class'
 
 export class PageUtils {
   bot: EtherealEngineBot

@@ -5,7 +5,7 @@ import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
 import { EngineState, getEngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
-import { getMutableState, getState } from '@etherealengine/hyperflux'
+import { getState } from '@etherealengine/hyperflux'
 
 import { BotHooks, XRBotHooks } from '../enums/BotHooks'
 import {
@@ -23,6 +23,7 @@ import {
 } from './xrBotHookFunctions'
 
 export const BotHookFunctions = {
+  [BotHooks.IsBot]:isBot,
   [BotHooks.LocationLoaded]: locationLoaded,
   [BotHooks.SceneLoaded]: sceneLoaded,
   [BotHooks.GetPlayerPosition]: getPlayerPosition,
@@ -47,6 +48,10 @@ export const BotHookFunctions = {
 }
 
 // === ENGINE === //
+
+export function isBot(){
+  return getState(EngineState).isBot
+}
 
 export function locationLoaded() {
   return getState(EngineState).joinedWorld

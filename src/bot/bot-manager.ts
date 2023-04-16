@@ -1,5 +1,5 @@
-import { EtherealEngineBot } from '.'
-import { BotActionType } from './bot-action'
+import { EtherealEngineBot } from './bot-class'
+import { BotAction, BotActionType } from './bot-action'
 
 export class BotManager {
   bots: {
@@ -20,12 +20,12 @@ export class BotManager {
     this.options = options
   }
 
-  findBotByName(name) {
-    return this.bots[name]
+  findBotById(id:string) {
+    return this.bots[id]
   }
 
-  addBot(name) {
-    const foundBot = this.findBotByName(name)
+  addBot(id:string,name:string) {
+    const foundBot = this.findBotById(id)
     if (foundBot) {
       return foundBot
     }
@@ -35,22 +35,38 @@ export class BotManager {
       ...this.options
     })
 
-    this.bots[name] = bot
+    this.bots[id] = bot
 
     return bot
   }
 
-  addAction(botName, action) {
-    this.actions.push({ botName, action })
+  removeBot(id:string){
+    const foundBot = this.findBotById(id)
+    if(!foundBot){
+      return null
+    }
+    foundBot.quit()
+    delete this.bots[id]
+    return foundBot
+  }
+
+  getActions(){
+    return this.actions
+  }
+  
+  addAction(botId:string, action:BotAction) {
+    this.actions.push({ botId, action })
   }
 
   async run() {
+    console.log("bots : ",this.bots)
+
     for (const botAction of this.actions) {
-      const { botName, action } = botAction
-      const bot = this.findBotByName(botName)
+      const { botId, action }:{botId:string,action} = botAction
+      const bot = this.findBotById(botId)
 
       if (!bot) {
-        console.error('Invalid bot name', botName)
+        console.error('Invalid bot Id', botId)
         continue
       }
 
@@ -174,3 +190,5 @@ export class BotManager {
     this.bots = {}
   }
 }
+
+
