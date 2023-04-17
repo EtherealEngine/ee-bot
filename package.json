@@ -17,7 +17,7 @@
   "npmClient": "npm",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "ts-node-dev ./src/index.ts",
+    "dev": "ts-node --swc ./src/index.ts",
     "check-errors": "tsc --noemit",
     "validate": "npm run test",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
@@ -27,12 +27,12 @@
     "express": "^4.18.2",
     "gl-matrix": "^3.4.3",
     "puppeteer": "^19.6.3",
+    "ts-node": "10.9.1",
     "webxr-emulator": "etherealengine/WebXR-emulator-extension"
   },
   "license": "ISC",
   "devDependencies": {
     "@types/expect-puppeteer": "^5.0.3",
-    "@types/mocha": "^10.0.1",
-    "ts-node-dev": "^2.0.0"
+    "@types/mocha": "^10.0.1"
   }
 }

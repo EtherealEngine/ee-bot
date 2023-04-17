@@ -49,7 +49,8 @@ app.put('/bots/:id/create', (req, res) => {
   try {
     const id:string  = req.params.id
     const name:string = req.body.name
-    const bot = botManager.addBot(id, name)
+    const options = req.body.options
+    const bot = botManager.addBot(id, name , options)
     res.json(bot)
   }
   catch (error) {
