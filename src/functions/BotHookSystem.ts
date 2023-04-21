@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { isDev } from '@etherealengine/common/src/config'
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
-import { getMutableState } from '@etherealengine/hyperflux'
+import { getState } from '@etherealengine/hyperflux'
 
 import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
@@ -11,8 +11,7 @@ import { defineSystem } from '@etherealengine/engine/src/ecs/functions/SystemFun
 const setupBotKey = 'ee.bot.setupBotKey'
 
 const execute = () => {
-  const xrSession = getMutableState(XRState).session.value
-  if (getMutableState(EngineState).isBot.value && Boolean(xrSession)) {
+  if (getState(EngineState).isBot && getState(XRState).session) {
     sendXRInputData()
   }
 }
