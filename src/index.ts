@@ -1,105 +1,71 @@
-import express from "express"
-import { BotAction } from "./bot/bot-action"
-import {BotManager} from './bot/bot-manager'
+import Koa from 'koa';
+import Router from "koa-router"
+import bodyParser from "koa-bodyparser"
+import { BotAction } from './bot/bot-action';
+import { BotManager } from './bot/bot-manager';
 
-const app = express()
-const botManager = new BotManager()
-app.use(express.json())
+const app = new Koa();
+const router = new Router();
+const botManager = new BotManager();
 
-app.get('/', (req, res) => {
-  try {
-  return res.json({status:"ee-bot api is working"})
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+app.use(bodyParser());
 
-app.get('/bots', (req, res) => {
-  try {
-    res.json(botManager.bots)
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.get('/', (ctx) => {
+  ctx.body = { status: 'ee-bot api is working' };
+});
 
-app.get('/bots/:id', (req,res) => {
-  try {
-    const id:string  = req.params.id
-    const bot = botManager.findBotById(id)
-    res.json(bot)
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.get('/bots', (ctx) => {
+  ctx.body = botManager.bots;
+});
 
-app.get('/bots/actions', (req,res) => {
-  try {
-    const actions = botManager.getActions()
-    return res.json(actions) 
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.get('/bots/:id', (ctx) => {
+  const id = ctx.params.id;
+  const bot = botManager.findBotById(id);
+  ctx.body = bot;
+});
 
-app.put('/bots/:id/create', (req, res) => {
-  try {
-    const id:string  = req.params.id
-    const name:string = req.body.name
-    const options = req.body.options
-    const bot = botManager.addBot(id, name , options)
-    res.json(bot)
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.get('/bots/actions', (ctx) => {
+  const actions = botManager.getActions();
+  ctx.body = actions;
+});
 
-app.post('/bots/:id/actions/add', (req, res) => {
-  try {
-  const id:string  = req.params.id
-  const action:BotAction = req.body.action
-  botManager.addAction(id,action)
-  res.sendStatus(200)
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.put('/bots/:id/create', (ctx) => {
+  const id = ctx.params.id;
+  const body:any = ctx.request.body
+  const name = body.name;
+  const options = body.options;
+  const bot = botManager.addBot(id, name, options);
+  ctx.body = bot;
+});
 
-app.post('/bots/run', async (req, res) => {
-  try {
-    await botManager.run()
-    res.sendStatus(200)
-  } catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.post('/bots/:id/actions/add', (ctx) => {
+  const id = ctx.params.id;
+  const body:any = ctx.request.body
+  const action: BotAction = body.action;
+  botManager.addAction(id, action);
+  ctx.status = 200;
+});
 
-app.delete('/bots/:id/delete', async (req, res) => {
-  try {
-    const id:string  = req.params.id
-    const bot = botManager.removeBot(id)
-    res.sendStatus(200)
-  } catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.post('/bots/run', async (ctx) => {
+  await botManager.run();
+  ctx.status = 200;
+});
 
-app.delete('/bots/clear', async (req, res) => {
-  try {
-  await botManager.clear()
-  res.sendStatus(200)
-  }
-  catch (error) {
-    res.status(500).send(error.message)
-  }
-})
+router.delete('/bots/:id/delete', async (ctx) => {
+  const id = ctx.params.id;
+  const bot = botManager.removeBot(id);
+  ctx.status = 200;
+});
+
+router.delete('/bots/clear', async (ctx) => {
+  await botManager.clear();
+  ctx.status = 200;
+});
+
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`)
-})
+  console.log(`Koa Server listening on port ${PORT}`);
+});
