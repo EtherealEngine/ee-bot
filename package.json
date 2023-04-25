@@ -33,8 +33,6 @@
     "puppeteer": "^19.6.3",
     "ts-node": "10.9.1",
     "webxr-emulator": "etherealengine/WebXR-emulator-extension",
-    "@etherealengine/common": "^1.2.0",
-    "@etherealengine/engine": "^1.2.0",
     "@etherealengine/server-core": "^1.2.0"
   },
   "license": "ISC",
