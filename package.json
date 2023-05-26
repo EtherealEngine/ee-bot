@@ -24,8 +24,9 @@
     "precommit": "no-master-commits -b master"
   },
   "dependencies": {
-    "express": "^4.18.2",
     "gl-matrix": "^3.4.3",
+    "koa": "^2.14.2",
+    "koa-json": "^2.0.2",
     "puppeteer": "^19.6.3",
     "webxr-emulator": "etherealengine/WebXR-emulator-extension"
   },

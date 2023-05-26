@@ -1,14 +1,15 @@
-import express from "express"
-import { BotAction } from "./bot/bot-action"
+import koa from 'koa'
+import json from 'koa-json'
+import { BotAction } from './bot/bot-action'
 import {BotManager} from './bot/bot-manager'
 
-const app = express()
+const app = koa()
 const botManager = new BotManager()
-app.use(express.json())
+app.use(json())
 
 app.get('/', (req, res) => {
   try {
-  return res.json({status:"ee-bot api is working"})
+  return res.json({status:'ee-bot api is working'})
   }
   catch (error) {
     res.status(500).send(error.message)
