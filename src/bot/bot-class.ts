@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import fs from 'fs'
 import * as path from 'path'
-import { P } from 'pino'
-import { Input } from 'postcss'
 import * as puppeteer from 'puppeteer'
 import { Browser, BrowserConnectOptions, BrowserLaunchArgumentOptions, LaunchOptions, Page } from 'puppeteer'
 import { URL } from 'url'
