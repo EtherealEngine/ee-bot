@@ -94,10 +94,8 @@ export function getWorldMetadata() {}
 
 export function serializeEngine() {
   const engine = {
-    tickRate: Engine.instance.tickRate,
     userId: Engine.instance.userId,
     store: Engine.instance.store,
-    frameTime: Engine.instance.frameTime,
     engineTimer: Engine.instance.engineTimer,
     isBot: getState(EngineState).isBot,
     publicPath: getState(EngineState).publicPath,
