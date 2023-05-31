@@ -44,8 +44,8 @@ const FriendActionType = {
   FindFriend: 'findFriend',
   SelectFriend: 'SelectFriend',
   SelectBlockedFriend: 'selectBlockedFriend',
-  BlockFriend: 'blockFreind', // need to check how to implement this later
-  UnblockFriend: 'unblockFreind' // need to check how to implement this later
+  BlockFriend: 'blockFriend', // need to check how to implement this later
+  UnblockFriend: 'unblockFriend' // need to check how to implement this later
 }
 
 const GroupActionType = {

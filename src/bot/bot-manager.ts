@@ -24,7 +24,7 @@ export class BotManager {
     return this.bots[id]
   }
 
-  addBot(id:string,name:string) {
+  addBot(id:string,name:string ,options:any = this.options) {
     const foundBot = this.findBotById(id)
     if (foundBot) {
       return foundBot
@@ -32,7 +32,7 @@ export class BotManager {
 
     const bot = new EtherealEngineBot({
       name,
-      ...this.options
+      ...options
     })
 
     this.bots[id] = bot
