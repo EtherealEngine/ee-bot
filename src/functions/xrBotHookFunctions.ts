@@ -5,6 +5,7 @@ import { Quaternion, Vector3 } from 'three'
 import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
 import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
+import { requestXRSession } from '@etherealengine/engine/src/xr/XRSessionFunctions'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
 
@@ -68,7 +69,7 @@ export function xrInitialized() {
 }
 
 export function startXR() {
-  dispatchAction(XRAction.requestSession({}) as any)
+  requestXRSession()
   WebXREventDispatcher.instance.dispatchEvent({
     type: 'webxr-pose',
     detail: {
