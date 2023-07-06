@@ -33,6 +33,10 @@
     "**/node_modules/**"
   ],
   "include": [
+    "../../../engine/src/**/*.ts",
+    "../../../engine/src/**/*.tsx",
+    "../../../server-core",
     "./**/*.ts",
-    "./**/*.tsx"]
+    "./**/*.tsx"
+  ]
 }
