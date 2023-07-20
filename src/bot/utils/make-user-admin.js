@@ -77,7 +77,7 @@ export const makeAdmin = async (userId) => {
         if (userMatch != null) {
             userMatch.userRole = 'admin';
             await userMatch.save();
-            for(const { type } of scopeTypeSeed.templates) {
+            for(const { type } of scopeTypeSeed) {
                 try {
                     const existingScope = await Scope.findOne({ where: { userId: userId, type }})
                     if (existingScope == null)
