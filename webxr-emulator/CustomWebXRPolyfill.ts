@@ -22,8 +22,6 @@ import { WebXREventDispatcher } from './WebXREventDispatcher'
 export class EtherealEngineWebXRPolyfill extends WebXRPolyfill {
   constructor() {
     super({ global: globalThis })
-    this.global = this.global
-
     // Note: Experimental.
     //       Override some XR APIs to track active immersive session to
     //       enable to exit immersive by the extension.
