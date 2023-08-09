@@ -33,11 +33,11 @@ const AvatarActionType = {
 }
 
 //Bot Group Actions
-const PartyActionType = {
-  PartyCreate: 'partyCreate',
-  PartyDelete: 'partyDelete',
-  PartyLeave: 'partyLeave',
-  PartyInvite: 'partyInvite'
+const ChannelActionType = {
+  ChannelCreate: 'channelCreate',
+  ChannelDelete: 'channelDelete',
+  ChannelLeave: 'channelLeave',
+  ChannelInvite: 'channelInvite'
 }
 
 const FriendActionType = {
@@ -51,7 +51,7 @@ const FriendActionType = {
 const GroupActionType = {
   ShareToQuest: 'shareToQuest', // share as spectator or invite based on boolean
   ShareToDirect: 'shareToDirect', // share via mail or phone , share as spectator or invite based on boolean
-  PartySettings: PartyActionType,
+  ChannelSettings: ChannelActionType,
   FriendSettings: FriendActionType
 }
 
@@ -267,21 +267,21 @@ export class BotAction {
     return new BotAction(BotActionType.Group.ShareToDirect, { value })
   }
 
-  //Party
-  static partyCreate() {
-    return new BotAction(BotActionType.Group.PartySettings.PartyCreate)
+  //Channel
+  static channelCreate() {
+    return new BotAction(BotActionType.Group.ChannelSettings.ChannelCreate)
   }
 
-  static partyDelete() {
-    return new BotAction(BotActionType.Group.PartySettings.PartyDelete)
+  static channelDelete() {
+    return new BotAction(BotActionType.Group.ChannelSettings.ChannelDelete)
   }
 
-  static partyLeave() {
-    return new BotAction(BotActionType.Group.PartySettings.PartyLeave)
+  static channelLeave() {
+    return new BotAction(BotActionType.Group.ChannelSettings.ChannelLeave)
   }
 
-  static partyInvite(EmailorPhone: string) {
-    return new BotAction(BotActionType.Group.PartySettings.PartyInvite, { EmailorPhone })
+  static channelInvite(EmailorPhone: string) {
+    return new BotAction(BotActionType.Group.ChannelSettings.ChannelInvite, { EmailorPhone })
   }
   //Animate
   static animateCharacter(animation) {
