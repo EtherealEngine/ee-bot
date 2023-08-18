@@ -54,7 +54,7 @@ export function isBot(){
 }
 
 export function locationLoaded() {
-  return getState(EngineState).joinedWorld
+  return getState(EngineState).connectedWorld
 }
 
 export function sceneLoaded() {
