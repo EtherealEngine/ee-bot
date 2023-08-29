@@ -83,7 +83,7 @@ export function rotatePlayer({ angle }) {
 }
 
 export function getPeers() {
-  return Array.from(Engine.instance.worldNetwork.peers)
+  return Object.entries(Engine.instance.worldNetwork.peers)
 }
 
 export function getSceneMetadata() {
