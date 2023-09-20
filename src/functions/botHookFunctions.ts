@@ -21,6 +21,7 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
+import { XRState } from '@etherealengine/engine/src/xr/XRState'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -99,7 +100,7 @@ export function serializeEngine() {
     engineTimer: Engine.instance.engineTimer,
     isBot: getState(EngineState).isBot,
     publicPath: getState(EngineState).publicPath,
-    xrFrame: Engine.instance.xrFrame,
+    xrFrame: getState(XRState).xrFrame,
     isEditor: getState(EngineState).isEditor
   }
 
