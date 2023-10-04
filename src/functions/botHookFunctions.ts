@@ -22,6 +22,7 @@ import {
   xrSupported
 } from './xrBotHookFunctions'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
+import { NetworkState } from '@etherealengine/engine/src/networking/NetworkState'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -84,7 +85,7 @@ export function rotatePlayer({ angle }) {
 }
 
 export function getPeers() {
-  return Object.entries(Engine.instance.worldNetwork.peers)
+  return Object.entries(NetworkState.worldNetwork.peers)
 }
 
 export function getSceneMetadata() {
