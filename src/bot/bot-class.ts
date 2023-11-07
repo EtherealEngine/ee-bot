@@ -10,28 +10,7 @@ import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 import { PageUtils } from './utils/pageUtils'
-import { Timeout } from '@feathersjs/errors'
-import { resolve } from 'app-root-path'
 import { error } from 'cli'
-import { convertTypeAcquisitionFromJson } from 'typescript'
-import logger from '@etherealengine/server-core/src/ServerLogger'
-import { requestXRDevice } from '../../webxr-emulator/webxr-polyfill/devices'
-import WebVRDevice from '../../webxr-emulator/webxr-polyfill/devices/WebVRDevice'
-import {
-  getXRInputPosition,
-  moveControllerStick,
-  overrideXR,
-  pressControllerButton,
-  setXRInputPosition,
-  startXR,
-  tweenXRInputSource,
-  updateController,
-  updateHead,
-  xrInitialized,
-  xrSupported
-} from '../functions/xrBotHookFunctions'
-// import { EmulatedXRDevice } from '../../immersive-web-emulator-1.3.0/polyfill/EmulatedXRDevice'
-
 type BotProps = {
   verbose?: Boolean
   headless?: Boolean
@@ -45,7 +24,6 @@ type BotProps = {
  * Main class for creating a bot.
  */
 export class EtherealEngineBot {
-  private webVRDevice: WebVRDevice | null = null
   activeChannel
   headless: Boolean
   ci: Boolean
@@ -81,75 +59,6 @@ export class EtherealEngineBot {
     // if (activeChannelMatch && activeChannelMatch.length > 0) {
     //     this.activeChannel = activeChannelMatch[1];
     // }
-  }
-
-  async enableCameraForMotionCapture() {
-    const motionCaptureButton = await this.page.waitForSelector('#UserPoseTracking', { timeout: 5000 }).catch(() => null)
-    if (motionCaptureButton) {
-      await motionCaptureButton.click();
-      await this.delay(3000)
-
-      const pages = await this.browser.pages()
-      const newPage = pages[pages.length - 1]
-      await this.delay(5000)
-
-      const captureButton = await newPage.waitForSelector('button[data-tip="Capture"]', { timeout: 5000 }).catch(() => null)
-      if (captureButton) {
-        await captureButton.click()
-        console.log("Clicked Capture button");
-
-        await this.delay(3000)
-
-        const settingsButton = await newPage.waitForSelector('button[data-tip="Settings"]', { timeout: 5000 }).catch(() => null)
-        if (settingsButton) {
-          await settingsButton.click()
-          await this.delay(2000)
-
-          const debugTabSelector = await newPage.waitForSelector('.tabs-boxed .tab:nth-child(3)', { timeout: 5000 }).catch(() => null)
-          if (debugTabSelector) {
-            await debugTabSelector.click()
-            await this.delay(2000)
-
-            const throttleSendCheckbox = await newPage.waitForSelector('li.cursor-pointer.label input[type="checkbox"]', { timeout: 5000 }).catch(() => null)
-            if (throttleSendCheckbox) {
-              await throttleSendCheckbox.click()
-              await this.delay(2000)
-            }
-
-            const closeButtonSelector = await newPage.waitForSelector('div.fixed button.btn', { timeout: 5000 }).catch(() => null)
-            await closeButtonSelector?.click()
-            await this.delay(2000)
-          }
-
-          const enableCameraSelector = await newPage.waitForSelector('button.btn[data-tip="Camera"]', { timeout: 5000 }).catch(() => null)
-          await enableCameraSelector?.click()
-          await this.delay(1000)
-
-          const poseButton = await newPage.waitForSelector('button.btn[data-tip="pose"]', { timeout: 5000 }).catch(() => null)
-          await poseButton?.click()
-          await this.delay(2000)
-
-          return newPage
-        }
-      }
-    }
-  }
-
-  async enablePlaybackForMotionCapture() {
-
-    let newPage = await this.enableCameraForMotionCapture()
-    if (newPage) {
-      const recordButton = await newPage.waitForSelector('button.btn[data-tip="Record"]', { timeout: 5000 }).catch(() => null)
-      await recordButton?.click()
-      console.log("Clicked record button")
-      await this.delay(2000)
-
-      const enablePlaybackSelector = await newPage.waitForSelector('button.btn[data-tip="Playback"]', { timeout: 5000 }).catch(() => null)
-      await enablePlaybackSelector?.click()
-      console.log("Clicked Playback button")
-      await this.delay(2000)
-    }
-
   }
   async clickAllButtons() {
     const trigger1 = await this.page.waitForSelector('[aria-label="Emote"]')
@@ -368,7 +277,7 @@ export class EtherealEngineBot {
     await this.waitForTimeout(timeout)
   }
 
-  async interactObject() { }
+  async interactObject() {}
 
   /** Runs a function and takes a screenshot if it fails
    * @param {Function} fn Function to execut _in the node context._
@@ -569,7 +478,7 @@ export class EtherealEngineBot {
     context.overridePermissions(parsedUrl.origin, ['microphone', 'camera'])
 
     console.log('Going to ' + url)
-    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200 * 1000 })
+    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60 * 1000 })
 
     const granted = await this.page.evaluate(async () => {
       // @ts-ignore
