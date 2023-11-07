@@ -536,28 +536,11 @@ export class EtherealEngineBot {
     await userBtn?.click()
     await this.page.waitForSelector('#user-id')
     const userId = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
-    console.log(userId);
-
-    // const userId = await new Promise((resolve) => {
-    //   const interval = setInterval(async () => {
-
-    //     if (id !== '') {
-    //       clearInterval(interval)
-    //       resolve(id)
-    //     }
-    //   }, 100)
-    // })
     console.log(userId)
     //TODO: We should change this from making admin to registered user.
     await makeAdmin(userId)
     await this.navigate(sceneUrl)
     await this.delay(5000)
-    // await this.page.mouse.click(0, 0)
-    // await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
-    // console.log('selected sucessfully')
-    // await this.page.mouse.click(0, 0)
-    // await this.setFocus('canvas')
-    // await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
   }
 
   async waitForTimeout(timeout: number) {
