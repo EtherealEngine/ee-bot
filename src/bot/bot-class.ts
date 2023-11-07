@@ -10,6 +10,27 @@ import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 import { PageUtils } from './utils/pageUtils'
+import { Timeout } from '@feathersjs/errors'
+import { resolve } from 'app-root-path'
+import { error } from 'cli'
+import { convertTypeAcquisitionFromJson } from 'typescript'
+import logger from '@etherealengine/server-core/src/ServerLogger'
+import { requestXRDevice } from '../../webxr-emulator/webxr-polyfill/devices'
+import WebVRDevice from '../../webxr-emulator/webxr-polyfill/devices/WebVRDevice'
+import {
+  getXRInputPosition,
+  moveControllerStick,
+  overrideXR,
+  pressControllerButton,
+  setXRInputPosition,
+  startXR,
+  tweenXRInputSource,
+  updateController,
+  updateHead,
+  xrInitialized,
+  xrSupported
+} from '../functions/xrBotHookFunctions'
+// import { EmulatedXRDevice } from '../../immersive-web-emulator-1.3.0/polyfill/EmulatedXRDevice'
 
 type BotProps = {
   verbose?: Boolean
@@ -24,6 +45,7 @@ type BotProps = {
  * Main class for creating a bot.
  */
 export class EtherealEngineBot {
+  private webVRDevice: WebVRDevice | null = null
   activeChannel
   headless: Boolean
   ci: Boolean
@@ -59,6 +81,225 @@ export class EtherealEngineBot {
     // if (activeChannelMatch && activeChannelMatch.length > 0) {
     //     this.activeChannel = activeChannelMatch[1];
     // }
+  }
+
+  async enableCameraForMotionCapture() {
+    const motionCaptureButton = await this.page.waitForSelector('#UserPoseTracking', { timeout: 5000 }).catch(() => null)
+    if (motionCaptureButton) {
+      await motionCaptureButton.click();
+      await this.delay(3000)
+
+      const pages = await this.browser.pages()
+      const newPage = pages[pages.length - 1]
+      await this.delay(5000)
+
+      const captureButton = await newPage.waitForSelector('button[data-tip="Capture"]', { timeout: 5000 }).catch(() => null)
+      if (captureButton) {
+        await captureButton.click()
+        console.log("Clicked Capture button");
+
+        await this.delay(3000)
+
+        const settingsButton = await newPage.waitForSelector('button[data-tip="Settings"]', { timeout: 5000 }).catch(() => null)
+        if (settingsButton) {
+          await settingsButton.click()
+          await this.delay(2000)
+
+          const debugTabSelector = await newPage.waitForSelector('.tabs-boxed .tab:nth-child(3)', { timeout: 5000 }).catch(() => null)
+          if (debugTabSelector) {
+            await debugTabSelector.click()
+            await this.delay(2000)
+
+            const throttleSendCheckbox = await newPage.waitForSelector('li.cursor-pointer.label input[type="checkbox"]', { timeout: 5000 }).catch(() => null)
+            if (throttleSendCheckbox) {
+              await throttleSendCheckbox.click()
+              await this.delay(2000)
+            }
+
+            const closeButtonSelector = await newPage.waitForSelector('div.fixed button.btn', { timeout: 5000 }).catch(() => null)
+            await closeButtonSelector?.click()
+            await this.delay(2000)
+          }
+
+          const enableCameraSelector = await newPage.waitForSelector('button.btn[data-tip="Camera"]', { timeout: 5000 }).catch(() => null)
+          await enableCameraSelector?.click()
+          await this.delay(1000)
+
+          const poseButton = await newPage.waitForSelector('button.btn[data-tip="pose"]', { timeout: 5000 }).catch(() => null)
+          await poseButton?.click()
+          await this.delay(2000)
+
+          return newPage
+        }
+      }
+    }
+  }
+
+  async enablePlaybackForMotionCapture() {
+
+    let newPage = await this.enableCameraForMotionCapture()
+    if (newPage) {
+      const recordButton = await newPage.waitForSelector('button.btn[data-tip="Record"]', { timeout: 5000 }).catch(() => null)
+      await recordButton?.click()
+      console.log("Clicked record button")
+      await this.delay(2000)
+
+      const enablePlaybackSelector = await newPage.waitForSelector('button.btn[data-tip="Playback"]', { timeout: 5000 }).catch(() => null)
+      await enablePlaybackSelector?.click()
+      console.log("Clicked Playback button")
+      await this.delay(2000)
+    }
+
+  }
+  async clickAllButtons() {
+    const trigger1 = await this.page.waitForSelector('[aria-label="Emote"]')
+    if (trigger1) {
+      await trigger1.click()
+      await this.delay(5000)
+      await trigger1.click()
+    }
+    const trigger2 = await this.page.waitForSelector('[aria-label="Friends"]')
+    if (trigger2) {
+      await trigger2.click()
+      await this.delay(5000)
+      await trigger2.click
+    }
+    const trigger3 = await this.page.waitForSelector('[aria-label="Profile"]')
+    if (trigger3) {
+      await trigger3.click()
+      await this.delay(5000)
+      await trigger3.click()
+    }
+    const trigger4 = await this.page.waitForSelector('#UserPoseTracking', { timeout: 5000 }).catch(() => null)
+    if (trigger4) {
+      await trigger4.click()
+      await this.delay(2000)
+    }
+    const trigger5 = await this.page.waitForSelector('[aria-label="Enter FullScreen"]')
+    if (trigger5) {
+      await trigger5.click()
+      await this.delay(5000)
+    }
+    const trigger6 = await this.page.waitForSelector('[aria-label="Exit FullScreen"]')
+    if (trigger6) {
+      await trigger6.click()
+      await this.delay(5000)
+    }
+    const trigger7 = await this.page.waitForSelector('[aria-label="Microphone"]')
+    if (trigger7) {
+      await trigger7.click()
+      await this.delay(1000)
+    }
+    const trigger8 = await this.page.waitForSelector('[aria-label="Camera"]')
+    if (trigger8) {
+      await trigger8.click()
+      await this.delay(1000)
+    }
+    const trigger9 = await this.page.waitForSelector('[aria-label="Screenshare"]')
+    if (trigger9) {
+      await trigger9.click()
+      await this.delay(1000)
+    }
+    const trigger10 = await this.page.waitForSelector('[aria-label="Share"]')
+    if (trigger10) {
+      await trigger10.click()
+      await this.delay(1000)
+      await this.pressKey('Escape')
+    }
+    const trigger11 = await this.page.waitForSelector('#openMessagesButton')
+    if (trigger11) {
+      await trigger11.click()
+      console.log('Clicked the "openMessagesButton"')
+      await this.delay(1000)
+    }
+  }
+  async moveBot(direction, duration) {
+    const validDirections = ['left', 'right', 'forward', 'backward', 'jump', 'up', 'down', 'arrowleft', 'arrowright']
+    if (!validDirections.includes(direction)) {
+      throw new error('Invalid direction')
+    }
+    switch (direction) {
+      case 'left':
+        await this.pressKey('A')
+        await this.delay(4000)
+        await this.releaseKey('A')
+        break;
+      case 'right':
+        await this.pressKey('D')
+        await this.delay(1000)
+        await this.releaseKey('D')
+        break;
+      case 'forward':
+        await this.pressKey('W')
+        await this.delay(4000)
+        await this.releaseKey('W')
+        break;
+      case 'backward':
+        await this.pressKey('S')
+        await this.delay(6000)
+        await this.releaseKey('S')
+        break;
+      case 'jump':
+        await this.pressKey('Space')
+        await this.delay(1000)
+        await this.releaseKey('Space')
+      case 'up':
+        await this.pressKey('ArrowUp')
+        await this.delay(1000)
+        await this.releaseKey('ArrowUp')
+        break
+      case 'down':
+        await this.pressKey('ArrowDown')
+        await this.delay(1000)
+        await this.releaseKey('ArrowDown')
+        break
+      case 'arrowleft':
+        await this.pressKey('ArrowLeft')
+        await this.delay(1000)
+        await this.releaseKey('ArrowLeft')
+        break
+      case 'arrowright':
+        await this.pressKey('ArrowRight')
+        await this.delay(1000)
+        await this.releaseKey('ArrowRight')
+        break
+    }
+    await this.delay(duration)
+  }
+  async clickEmoteButtonAndSelectEmote() {
+    const emoteButton = await this.page.waitForSelector('[aria-label="Emote"]')
+    if (emoteButton) {
+      await emoteButton.click().catch(err => {
+        console.error('Error clicking emoteButton:', err);
+      })
+      await this.delay(6000)
+
+      const imgElement = await this.page.waitForSelector('button.MuiButtonBase-root-IIrwk.ispAN.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-root-gwFoGh.hLKZiD._menuItem_fba7b_146:nth-child(0)')
+      if (imgElement) {
+        imgElement.click()
+        console.log('Button clicked successfully.', imgElement)
+        await this.delay(5000)
+      }
+    }
+  }
+  async physics_triggers() {
+    const menu = await this.page.waitForSelector('#menu')
+    if (menu) {
+      await menu.click()
+      await this.delay(6000)
+    }
+    const savebutton = await this.page.waitForSelector('li[tabindex="-1"][role="menuitem"]')
+    if (savebutton) {
+      await savebutton.click()
+      console.log("savebutton clicked")
+      await this.delay(4000)
+    }
+    const submitbutton = await this.page.waitForSelector('button[type="submit"]')
+    if (submitbutton){
+      await submitbutton.click()
+      console.log('submitbutton clicked')
+      await this.delay(10000)
+    }
   }
 
   async keyPress(key, numMilliSeconds: number) {
@@ -127,7 +368,7 @@ export class EtherealEngineBot {
     await this.waitForTimeout(timeout)
   }
 
-  async interactObject() {}
+  async interactObject() { }
 
   /** Runs a function and takes a screenshot if it fails
    * @param {Function} fn Function to execut _in the node context._
@@ -264,10 +505,10 @@ export class EtherealEngineBot {
       devtools: !this.headless,
       ignoreHTTPSErrors: true,
       defaultViewport: this.windowSize,
-      ignoreDefaultArgs: ['--mute-audio'],
+      ignoreDefaultArgs: [],
       args: [
         this.headless ? '--headless' : '--enable-webgl',
-        this.headless ? '--disable-gpu': undefined,
+        this.headless ? '--disable-gpu' : undefined,
         //this.headless ? '--disable-3d-apis':undefined,
         '--enable-features=NetworkService',
         '--ignore-certificate-errors',
@@ -276,11 +517,11 @@ export class EtherealEngineBot {
         '--shm-size=4gb',
         `--window-size=${this.windowSize.width},${this.windowSize.height}`,
         '--use-fake-ui-for-media-stream=1',
-        '--use-fake-device-for-media-stream=1',
+        '--use-fake-device-for-media-stream',
         '--disable-web-security=1',
         //'--no-first-run',
         '--allow-file-access=1',
-        '--mute-audio'
+        //'--mute-audio',
       ].filter(Boolean),
       ...this.detectOsOption()
     } as LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
@@ -328,7 +569,7 @@ export class EtherealEngineBot {
     context.overridePermissions(parsedUrl.origin, ['microphone', 'camera'])
 
     console.log('Going to ' + url)
-    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60 * 1000 })
+    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 200 * 1000 })
 
     const granted = await this.page.evaluate(async () => {
       // @ts-ignore
@@ -382,28 +623,32 @@ export class EtherealEngineBot {
    */
   async enterEditor(sceneUrl, loginUrl) {
     await this.navigate(loginUrl)
-    await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
-    await this.pageUtils.clickSelectorId('h2', 'show-id-btn')
-    await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
-    const userId = await new Promise((resolve) => {
-      const interval = setInterval(async () => {
-        const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
-        if (id !== '') {
-          clearInterval(interval)
-          resolve(id)
-        }
-      }, 100)
-    })
+    let userBtn = await this.page.waitForSelector('#show-user-id')
+    await userBtn?.click()
+    await this.page.waitForSelector('#user-id')
+    const userId = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
+    console.log(userId);
+
+    // const userId = await new Promise((resolve) => {
+    //   const interval = setInterval(async () => {
+
+    //     if (id !== '') {
+    //       clearInterval(interval)
+    //       resolve(id)
+    //     }
+    //   }, 100)
+    // })
     console.log(userId)
     //TODO: We should change this from making admin to registered user.
     await makeAdmin(userId)
     await this.navigate(sceneUrl)
-    await this.page.mouse.click(0, 0)
-    await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
-    console.log('selected sucessfully')
-    await this.page.mouse.click(0, 0)
-    await this.setFocus('canvas')
-    await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
+    await this.delay(5000)
+    // await this.page.mouse.click(0, 0)
+    // await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
+    // console.log('selected sucessfully')
+    // await this.page.mouse.click(0, 0)
+    // await this.setFocus('canvas')
+    // await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
   }
 
   async waitForTimeout(timeout: number) {
