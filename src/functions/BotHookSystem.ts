@@ -7,6 +7,7 @@ import { getState } from '@etherealengine/hyperflux'
 import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
 import { defineSystem } from '@etherealengine/engine/src/ecs/functions/SystemFunctions'
+import { SimulationSystemGroup } from '@etherealengine/engine/src/ecs/functions/EngineFunctions'
 
 const setupBotKey = 'ee.bot.setupBotKey'
 
@@ -38,6 +39,7 @@ const reactor = () => {
 
 export const BotHookSystem = defineSystem({
   uuid: 'ee.bot.BotHookSystem',
+  insert: { with: SimulationSystemGroup },
   execute,
   reactor
 })
