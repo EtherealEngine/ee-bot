@@ -26,7 +26,7 @@ import { NetworkState } from '@etherealengine/engine/src/networking/NetworkState
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
-  [BotHooks.LocationLoaded]: locationLoaded,
+  [BotHooks.LocationReady]: worldNetworkReady,
   [BotHooks.SceneLoaded]: sceneLoaded,
   [BotHooks.GetPlayerPosition]: getPlayerPosition,
   [BotHooks.GetPlayerRotation]: getPlayerRotation,
@@ -55,8 +55,8 @@ export function isBot(){
   return getState(EngineState).isBot
 }
 
-export function locationLoaded() {
-  return getState(EngineState).connectedWorld
+export function worldNetworkReady() {
+  return NetworkState.worldNetwork?.ready
 }
 
 export function sceneLoaded() {
