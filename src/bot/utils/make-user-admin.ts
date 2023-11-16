@@ -26,7 +26,7 @@ Ethereal Engine. All Rights Reserved.
 import knex from 'knex'
 import { v4 } from 'uuid'
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ScopeType, scopePath } from '@etherealengine/engine/src/schemas/scope/scope.schema'
+import { ScopeID, ScopeType, scopePath } from '@etherealengine/engine/src/schemas/scope/scope.schema'
 import { UserType, userPath } from '@etherealengine/engine/src/schemas/user/user.schema'
 
 const dotenv = require('dotenv-flow');
@@ -71,7 +71,7 @@ export const makeAdmin = async (userId) => {
             .first()
           if (existingScope == null) {
             await knexClient.from<ScopeType>(scopePath).insert({
-              id: v4(),
+              id: v4() as ScopeID,
               userId: userId,
               type,
               createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
