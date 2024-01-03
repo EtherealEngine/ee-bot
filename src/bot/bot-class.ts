@@ -10,6 +10,7 @@ import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 import { getOS } from './utils/getOS'
 import { makeAdmin } from './utils/make-user-admin'
 import { PageUtils } from './utils/pageUtils'
+import { error } from 'cli'
 import { Timeout } from '@feathersjs/errors'
 
 type BotProps = {
@@ -131,6 +132,156 @@ export class EtherealEngineBot {
 
   }
 
+  async clickAllButtons() {
+    const trigger1 = await this.page.waitForSelector('[aria-label="Emote"]')
+    if (trigger1) {
+      await trigger1.click()
+      await this.delay(5000)
+      await trigger1.click()
+    }
+    const trigger2 = await this.page.waitForSelector('[aria-label="Friends"]')
+    if (trigger2) {
+      await trigger2.click()
+      await this.delay(5000)
+      await trigger2.click
+    }
+    const trigger3 = await this.page.waitForSelector('[aria-label="Profile"]')
+    if (trigger3) {
+      await trigger3.click()
+      await this.delay(5000)
+      await trigger3.click()
+    }
+    const trigger4 = await this.page.waitForSelector('#UserPoseTracking', { timeout: 5000 }).catch(() => null)
+    if (trigger4) {
+      await trigger4.click()
+      await this.delay(2000)
+    }
+    const trigger5 = await this.page.waitForSelector('[aria-label="Enter FullScreen"]')
+    if (trigger5) {
+      await trigger5.click()
+      await this.delay(5000)
+    }
+    const trigger6 = await this.page.waitForSelector('[aria-label="Exit FullScreen"]')
+    if (trigger6) {
+      await trigger6.click()
+      await this.delay(5000)
+    }
+    const trigger7 = await this.page.waitForSelector('[aria-label="Microphone"]')
+    if (trigger7) {
+      await trigger7.click()
+      await this.delay(1000)
+    }
+    const trigger8 = await this.page.waitForSelector('[aria-label="Camera"]')
+    if (trigger8) {
+      await trigger8.click()
+      await this.delay(1000)
+    }
+    const trigger9 = await this.page.waitForSelector('[aria-label="Screenshare"]')
+    if (trigger9) {
+      await trigger9.click()
+      await this.delay(1000)
+    }
+    const trigger10 = await this.page.waitForSelector('[aria-label="Share"]')
+    if (trigger10) {
+      await trigger10.click()
+      await this.delay(1000)
+      await this.pressKey('Escape')
+    }
+    const trigger11 = await this.page.waitForSelector('#openMessagesButton')
+    if (trigger11) {
+      await trigger11.click()
+      console.log('Clicked the "openMessagesButton"')
+      await this.delay(1000)
+    }
+  }
+  async moveBot(direction, duration) {
+    const validDirections = ['left', 'right', 'forward', 'backward', 'jump', 'up', 'down', 'arrowleft', 'arrowright']
+    if (!validDirections.includes(direction)) {
+      throw new error('Invalid direction')
+    }
+    switch (direction) {
+      case 'left':
+        await this.pressKey('A')
+        await this.delay(4000)
+        await this.releaseKey('A')
+        break;
+      case 'right':
+        await this.pressKey('D')
+        await this.delay(1000)
+        await this.releaseKey('D')
+        break;
+      case 'forward':
+        await this.pressKey('W')
+        await this.delay(4000)
+        await this.releaseKey('W')
+        break;
+      case 'backward':
+        await this.pressKey('S')
+        await this.delay(6000)
+        await this.releaseKey('S')
+        break;
+      case 'jump':
+        await this.pressKey('Space')
+        await this.delay(1000)
+        await this.releaseKey('Space')
+      case 'up':
+        await this.pressKey('ArrowUp')
+        await this.delay(1000)
+        await this.releaseKey('ArrowUp')
+        break
+      case 'down':
+        await this.pressKey('ArrowDown')
+        await this.delay(1000)
+        await this.releaseKey('ArrowDown')
+        break
+      case 'arrowleft':
+        await this.pressKey('ArrowLeft')
+        await this.delay(1000)
+        await this.releaseKey('ArrowLeft')
+        break
+      case 'arrowright':
+        await this.pressKey('ArrowRight')
+        await this.delay(1000)
+        await this.releaseKey('ArrowRight')
+        break
+    }
+    await this.delay(duration)
+  }
+  async clickEmoteButtonAndSelectEmote() {
+    const emoteButton = await this.page.waitForSelector('[aria-label="Emote"]')
+    if (emoteButton) {
+      await emoteButton.click().catch(err => {
+        console.error('Error clicking emoteButton:', err);
+      })
+      await this.delay(6000)
+
+      const imgElement = await this.page.waitForSelector('button.MuiButtonBase-root-IIrwk.ispAN.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-root-gwFoGh.hLKZiD._menuItem_fba7b_146:nth-child(0)')
+      if (imgElement) {
+        imgElement.click()
+        console.log('Button clicked successfully.', imgElement)
+        await this.delay(5000)
+      }
+    }
+  }
+  async physics_triggers() {
+    const menu = await this.page.waitForSelector('#menu')
+    if (menu) {
+      await menu.click()
+      await this.delay(6000)
+    }
+    const savebutton = await this.page.waitForSelector('li[tabindex="-1"][role="menuitem"]')
+    if (savebutton) {
+      await savebutton.click()
+      console.log("savebutton clicked")
+      await this.delay(4000)
+    }
+    const submitbutton = await this.page.waitForSelector('button[type="submit"]')
+    if (submitbutton){
+      await submitbutton.click()
+      console.log('submitbutton clicked')
+      await this.delay(10000)
+    }
+  }
 
   async keyPress(key, numMilliSeconds: number) {
     console.log('Running with key ' + key)
@@ -351,7 +502,7 @@ export class EtherealEngineBot {
         '--disable-web-security=1',
         //'--no-first-run',
         '--allow-file-access=1',
-        //'--mute-audio'
+        //'--mute-audio',
       ].filter(Boolean),
       ...this.detectOsOption()
     } as LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
@@ -453,28 +604,15 @@ export class EtherealEngineBot {
    */
   async enterEditor(sceneUrl, loginUrl) {
     await this.navigate(loginUrl)
-    await this.page.waitForFunction("document.querySelector('#show-id-btn')", { timeout: 1000000 })
-    await this.pageUtils.clickSelectorId('h2', 'show-id-btn')
-    await this.page.waitForFunction("document.querySelector('#user-id')", { timeout: 1000000 })
-    const userId = await new Promise((resolve) => {
-      const interval = setInterval(async () => {
-        const id = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
-        if (id !== '') {
-          clearInterval(interval)
-          resolve(id)
-        }
-      }, 100)
-    })
+    let userBtn = await this.page.waitForSelector('#show-user-id')
+    await userBtn?.click()
+    await this.page.waitForSelector('#user-id')
+    const userId = await this.page.evaluate(() => document.querySelector('#user-id')!.getAttribute('value'))
     console.log(userId)
     //TODO: We should change this from making admin to registered user.
     await makeAdmin(userId)
     await this.navigate(sceneUrl)
-    await this.page.mouse.click(0, 0)
-    await this.page.waitForFunction("document.querySelector('canvas')", { timeout: 1000000 })
-    console.log('selected sucessfully')
-    await this.page.mouse.click(0, 0)
-    await this.setFocus('canvas')
-    await this.pageUtils.clickSelectorId('canvas', 'viewport-canvas')
+    await this.delay(5000)
   }
 
   async waitForTimeout(timeout: number) {

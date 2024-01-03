@@ -26,16 +26,16 @@ Ethereal Engine. All Rights Reserved.
 import knex from 'knex'
 import { v4 } from 'uuid'
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ScopeType, scopePath } from '@etherealengine/engine/src/schemas/scope/scope.schema'
+import { ScopeID, ScopeTypeInterface, scopePath } from '@etherealengine/engine/src/schemas/scope/scope.schema'
 import { UserType, userPath } from '@etherealengine/engine/src/schemas/user/user.schema'
 
-const dotenv = require('dotenv-flow');
+const dotenv = require('dotenv-flow')
 import appRootPath from 'app-root-path'
 const { scopeTypeSeed } = require('@etherealengine/server-core/src/scope/scope-type/scope-type.seed')
 
 dotenv.config({
-    path: appRootPath.path,
-    silent: true
+  path: appRootPath.path,
+  silent: true
 })
 
 export const makeAdmin = async (userId) => {
@@ -63,15 +63,15 @@ export const makeAdmin = async (userId) => {
       for (const { type } of scopeTypeSeed) {
         try {
           const existingScope = await knexClient
-            .from<ScopeType>(scopePath)
+            .from<ScopeTypeInterface>(scopePath)
             .where({
               userId: userId,
               type
             })
             .first()
           if (existingScope == null) {
-            await knexClient.from<ScopeType>(scopePath).insert({
-              id: v4(),
+            await knexClient.from<ScopeTypeInterface>(scopePath).insert({
+              id: v4() as ScopeID,
               userId: userId,
               type,
               createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
@@ -91,4 +91,4 @@ export const makeAdmin = async (userId) => {
   } catch (err) {
     console.error(err)
   }
-};
+}
