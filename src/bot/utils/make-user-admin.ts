@@ -26,8 +26,8 @@ Ethereal Engine. All Rights Reserved.
 import knex from 'knex'
 import { v4 } from 'uuid'
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ScopeID, ScopeTypeInterface, scopePath } from '@etherealengine/engine/src/schemas/scope/scope.schema'
-import { UserType, userPath } from '@etherealengine/engine/src/schemas/user/user.schema'
+import { ScopeID, ScopeTypeInterface, scopePath } from '@etherealengine/common/src/schemas/scope/scope.schema'
+import { UserType, userPath } from '@etherealengine/common/src/schemas/user/user.schema'
 
 const dotenv = require('dotenv-flow')
 import appRootPath from 'app-root-path'
