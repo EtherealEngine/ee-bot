@@ -7,7 +7,7 @@ import { getState } from '@etherealengine/hyperflux'
 import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
 import { defineSystem } from '@etherealengine/engine/src/ecs/functions/SystemFunctions'
-import { SimulationSystemGroup } from '@etherealengine/engine/src/ecs/functions/EngineFunctions'
+import { SimulationSystemGroup } from '@etherealengine/engine/src/ecs/functions/SystemGroups'
 
 const setupBotKey = 'ee.bot.setupBotKey'
 
