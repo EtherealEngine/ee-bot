@@ -23,6 +23,7 @@ import {
 } from './xrBotHookFunctions'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { NetworkState } from '@etherealengine/engine/src/networking/NetworkState'
+import { SceneState } from '@etherealengine/engine/src/ecs/classes/Scene'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -60,7 +61,7 @@ export function worldNetworkReady() {
 }
 
 export function sceneLoaded() {
-  return getState(EngineState).sceneLoaded
+  return getState(SceneState).sceneLoaded
 }
 
 export function getPlayerPosition() {
