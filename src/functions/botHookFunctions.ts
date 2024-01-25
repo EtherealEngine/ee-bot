@@ -2,7 +2,7 @@ import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObject'
 import { Engine } from '@etherealengine/ecs/src/Engine'
-import { EngineState } from '@etherealengine/ecs/src/EngineState'
+import { EngineState } from '@etherealengine/engine/src/EngineState'
 import { getComponent } from '@etherealengine/ecs/src/ComponentFunctions'
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 import { getState } from '@etherealengine/hyperflux'
