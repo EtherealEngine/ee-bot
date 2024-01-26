@@ -2,7 +2,7 @@
 
 import { Quaternion, Vector3 } from 'three'
 
-import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { EngineState } from '@etherealengine/engine/src/EngineState'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
 import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
 import { requestXRSession } from '@etherealengine/engine/src/xr/XRSessionFunctions'
