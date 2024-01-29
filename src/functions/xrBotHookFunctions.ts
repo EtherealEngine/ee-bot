@@ -2,12 +2,12 @@
 
 import { Quaternion, Vector3 } from 'three'
 
+import { EngineState } from '@etherealengine/engine/src/EngineState'
 import { XRAction, XRState } from '@etherealengine/engine/src/xr/XRState'
 import { dispatchAction, getMutableState } from '@etherealengine/hyperflux'
 import { requestXRSession } from '@etherealengine/engine/src/xr/XRSessionFunctions'
 
 import { WebXREventDispatcher } from '../../webxr-emulator/WebXREventDispatcher'
-import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
 
 export async function overrideXR() {
   // inject the webxr polyfill from the webxr emulator source - this is a script added by the bot
