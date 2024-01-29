@@ -1,9 +1,7 @@
 import { MathUtils, Quaternion, Vector3 } from 'three'
 
 import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObject'
-import { Engine } from '@etherealengine/ecs/src/Engine'
-import { EngineState } from '@etherealengine/engine/src/EngineState'
-import { getComponent } from '@etherealengine/ecs/src/ComponentFunctions'
+
 import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 import { getState } from '@etherealengine/hyperflux'
 
@@ -23,7 +21,10 @@ import {
 } from './xrBotHookFunctions'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { NetworkState } from '@etherealengine/engine/src/networking/NetworkState'
-import { SceneState } from '@etherealengine/engine/src/scene/Scene'
+import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
+import { SceneState } from '@etherealengine/engine/src/ecs/classes/Scene'
+import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -61,7 +62,7 @@ export function worldNetworkReady() {
 }
 
 export function sceneLoaded() {
-  return getState(SceneState).sceneLoaded
+  return getState(SceneState).activeScene != null
 }
 
 export function getPlayerPosition() {

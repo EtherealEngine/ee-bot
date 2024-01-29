@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
 import { isDev } from '@etherealengine/common/src/config'
-import { EngineState } from '@etherealengine/engine/src/EngineState'
 import { XRState } from '@etherealengine/engine/src/xr/XRState'
 import { getState } from '@etherealengine/hyperflux'
-
 import { BotHookFunctions } from './botHookFunctions'
-import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
-import { defineSystem } from '@etherealengine/ecs/src/SystemFunctions'
-import { SimulationSystemGroup } from '@etherealengine/ecs/src/SystemGroups'
+import { sendXRInputData } from './xrBotHookFunctions'
+import { EngineState } from '@etherealengine/engine/src/ecs/classes/EngineState'
+import { defineSystem } from '@etherealengine/engine/src/ecs/functions/SystemFunctions'
+import { SimulationSystemGroup } from '@etherealengine/engine/src/ecs/functions/SystemGroups'
 
 const setupBotKey = 'ee.bot.setupBotKey'
 
