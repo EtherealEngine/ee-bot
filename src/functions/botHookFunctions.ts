@@ -4,7 +4,7 @@ import { iterativeMapToObject } from '@etherealengine/common/src/utils/mapToObje
 import { Engine } from '@etherealengine/ecs/src/Engine'
 import { EngineState } from '@etherealengine/engine/src/EngineState'
 import { getComponent } from '@etherealengine/ecs/src/ComponentFunctions'
-import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
+import { TransformComponent } from '@etherealengine/spatial/src/transform/components/TransformComponent'
 import { getState } from '@etherealengine/hyperflux'
 
 import { BotHooks, XRBotHooks } from '../enums/BotHooks'
@@ -21,8 +21,8 @@ import {
   xrInitialized,
   xrSupported
 } from './xrBotHookFunctions'
-import { XRState } from '@etherealengine/engine/src/xr/XRState'
-import { NetworkState } from '@etherealengine/engine/src/networking/NetworkState'
+import { XRState } from '@etherealengine/spatial/src/xr/XRState'
+import { NetworkState } from '@etherealengine/spatial/src/networking/NetworkState'
 import { SceneState } from '@etherealengine/engine/src/scene/Scene'
 
 export const BotHookFunctions = {
