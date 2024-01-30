@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { isDev } from '@etherealengine/common/src/config'
-import { EngineState } from '@etherealengine/engine/src/EngineState'
-import { XRState } from '@etherealengine/engine/src/xr/XRState'
+import { EngineState } from '@etherealengine/spatial/src/EngineState'
+import { XRState } from '@etherealengine/spatial/src/xr/XRState'
 import { getState } from '@etherealengine/hyperflux'
 
 import { BotHookFunctions } from './botHookFunctions'
