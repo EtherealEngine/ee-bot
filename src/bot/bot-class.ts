@@ -130,28 +130,29 @@ export class EtherealEngineBot {
     switch (direction) {
       case 'left':
         await this.pressKey('A')
-        await this.delay(4000)
+        await this.delay(1000)
         await this.releaseKey('A')
-        break;
+        break
       case 'right':
         await this.pressKey('D')
         await this.delay(1000)
         await this.releaseKey('D')
-        break;
+        break
       case 'forward':
         await this.pressKey('W')
-        await this.delay(4000)
+        await this.delay(1000)
         await this.releaseKey('W')
-        break;
+        break
       case 'backward':
         await this.pressKey('S')
-        await this.delay(6000)
+        await this.delay(1000)
         await this.releaseKey('S')
-        break;
+        break
       case 'jump':
         await this.pressKey('Space')
         await this.delay(1000)
         await this.releaseKey('Space')
+        break
       case 'up':
         await this.pressKey('ArrowUp')
         await this.delay(1000)
@@ -174,6 +175,20 @@ export class EtherealEngineBot {
         break
     }
     await this.delay(duration)
+  }
+  async startAudio() {
+    const clickmicrophone = await this.page.waitForSelector('[aria-label="Microphone"]')
+    if (clickmicrophone) {
+      await clickmicrophone.click()
+      await this.delay(1000)
+    }
+  }
+  async startVideo() {
+    const clickcamera = await this.page.waitForSelector('[aria-label="Camera"]')
+    if (clickcamera) {
+      await clickcamera.click()
+      await this.delay(1000)
+    }
   }
   async clickEmoteButtonAndSelectEmote() {
     const emoteButton = await this.page.waitForSelector('[aria-label="Emote"]')
@@ -478,7 +493,7 @@ export class EtherealEngineBot {
     context.overridePermissions(parsedUrl.origin, ['microphone', 'camera'])
 
     console.log('Going to ' + url)
-    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60 * 1000 })
+    await this.page.goto(url, { waitUntil: 'domcontentloaded', timeout: 1600 * 10000 })
 
     const granted = await this.page.evaluate(async () => {
       // @ts-ignore
