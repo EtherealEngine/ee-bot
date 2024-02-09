@@ -24,7 +24,7 @@
     "check-errors": "tsc --noemit",
     "validate": "npm run test",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "precommit": "no-master-commits -b master"
+    "precommit": "no-master-commits -b main"
   },
   "dependencies": {
     "gl-matrix": "^3.4.3",
