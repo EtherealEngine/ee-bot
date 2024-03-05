@@ -22,7 +22,7 @@ import {
   xrSupported
 } from './xrBotHookFunctions'
 import { XRState } from '@etherealengine/spatial/src/xr/XRState'
-import { NetworkState } from '@etherealengine/spatial/src/networking/NetworkState'
+import { NetworkState } from '@etherealengine/network'
 import { SceneState } from '@etherealengine/engine/src/scene/Scene'
 
 export const BotHookFunctions = {
