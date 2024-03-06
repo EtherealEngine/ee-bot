@@ -542,6 +542,12 @@ export class EtherealEngineBot {
     await this.pageUtils.clickSelectorId('canvas', 'engine-renderer-canvas')
   }
 
+  async clickCanvas() {
+    await this.page.mouse.click(0, 0)
+    await this.setFocus('canvas')
+    await this.pageUtils.clickSelectorId('canvas', 'engine-renderer-canvas')
+  }
+
   /** Enters the editor scene specified
    * @param {string} sceneUrl The url of the scene to load
    */
