@@ -24,6 +24,7 @@ import {
 import { XRState } from '@etherealengine/spatial/src/xr/XRState'
 import { NetworkState } from '@etherealengine/network'
 import { SceneState } from '@etherealengine/engine/src/scene/Scene'
+import { AvatarComponent } from '@etherealengine/engine/src/avatar/components/AvatarComponent'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -65,23 +66,23 @@ export function sceneLoaded() {
 }
 
 export function getPlayerPosition() {
-  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.position
+  return getComponent(AvatarComponent.getSelfAvatarEntity(), TransformComponent)?.position
 }
 export function getPlayerRotation() {
-  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.rotation
+  return getComponent(AvatarComponent.getSelfAvatarEntity(), TransformComponent)?.rotation
 }
 export function getPlayerScale() {
-  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.scale
+  return getComponent(AvatarComponent.getSelfAvatarEntity(), TransformComponent)?.scale
 }
 export function getPlayerTransform() {
-  return getComponent(Engine.instance.localClientEntity, TransformComponent)?.matrix
+  return getComponent(AvatarComponent.getSelfAvatarEntity(), TransformComponent)?.matrix
 }
 /**
  * @param {object} args
  * @param {number} args.angle in degrees
  */
 export function rotatePlayer({ angle }) {
-  const transform = getComponent(Engine.instance.localClientEntity, TransformComponent)
+  const transform = getComponent(AvatarComponent.getSelfAvatarEntity(), TransformComponent)
   transform.rotation.multiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), MathUtils.degToRad(angle)))
 }
 
