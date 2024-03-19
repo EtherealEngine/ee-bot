@@ -100,7 +100,6 @@ export function serializeEngine() {
   const engine = {
     userId: Engine.instance.userID,
     store: Engine.instance.store,
-    engineTimer: Engine.instance.engineTimer,
     isBot: getState(EngineState).isBot,
     publicPath: getState(EngineState).publicPath,
     xrFrame: getState(XRState).xrFrame,
