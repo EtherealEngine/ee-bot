@@ -25,6 +25,7 @@ import { XRState } from '@etherealengine/spatial/src/xr/XRState'
 import { NetworkState } from '@etherealengine/network'
 import { SceneState } from '@etherealengine/engine/src/scene/Scene'
 import { AvatarComponent } from '@etherealengine/engine/src/avatar/components/AvatarComponent'
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 
 export const BotHookFunctions = {
   [BotHooks.IsBot]:isBot,
@@ -54,7 +55,7 @@ export const BotHookFunctions = {
 // === ENGINE === //
 
 export function isBot(){
-  return getState(EngineState).isBot
+  return  navigator.userAgent === BotUserAgent
 }
 
 export function worldNetworkReady() {
@@ -100,7 +101,6 @@ export function serializeEngine() {
   const engine = {
     userId: Engine.instance.userID,
     store: Engine.instance.store,
-    isBot: getState(EngineState).isBot,
     publicPath: getState(EngineState).publicPath,
     xrFrame: getState(XRState).xrFrame,
     isEditor: getState(EngineState).isEditor

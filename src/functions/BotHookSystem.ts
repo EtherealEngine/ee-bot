@@ -8,11 +8,14 @@ import { BotHookFunctions } from './botHookFunctions'
 import { sendXRInputData, simulateXR } from './xrBotHookFunctions'
 import { defineSystem } from '@etherealengine/ecs/src/SystemFunctions'
 import { SimulationSystemGroup } from '@etherealengine/ecs/src/SystemGroups'
+import { BotUserAgent } from '@etherealengine/common/src/constants/BotUserAgent'
 
 const setupBotKey = 'ee.bot.setupBotKey'
 
+const isBot = navigator.userAgent === BotUserAgent
+
 const execute = () => {
-  if (getState(EngineState).isBot && getState(XRState).session) {
+  if (isBot && getState(XRState).session) {
     sendXRInputData()
   }
 }

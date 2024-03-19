@@ -277,6 +277,5 @@ export async function simulateXR() {
   // await loadScript(getState(EngineState).publicPath + '/scripts/webxr-polyfill.js')
   await overrideXR()
   await xrSupported()
-  getMutableState(EngineState).isBot.set(true)
   await startXR()
 }
